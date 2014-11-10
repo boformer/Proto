@@ -5,6 +5,7 @@ import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 
 import com.github.boformer.donut.protection.data.DataStore;
+import com.github.boformer.donut.protection.event.BlockEventHandler;
 
 public class DonutProtectionPlugin 
 {
@@ -17,6 +18,9 @@ public class DonutProtectionPlugin
 		
 		//init DataStore
 		dataStore = new DataStore();
+		
+		//register events
+		event.getGame().getEventManager().register(new BlockEventHandler(this));
 	}
 	
 	@SpongeEventHandler
