@@ -1,7 +1,6 @@
 package com.github.boformer.donut.protection.util;
 
 import org.spongepowered.api.math.Vector3d;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.github.boformer.donut.protection.config.WorldConfig;
