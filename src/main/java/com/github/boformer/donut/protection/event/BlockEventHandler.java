@@ -1,6 +1,6 @@
 package com.github.boformer.donut.protection.event;
 
-import org.spongepowered.api.event.SpongeEventHandler;
+import org.spongepowered.api.event.Subscribe;
 
 import com.github.boformer.donut.protection.DonutProtectionPlugin;
 import com.github.boformer.donut.protection.config.WorldConfig;
@@ -23,7 +23,7 @@ public class BlockEventHandler
 
 	//TODO onblockplace
 	
-	@SpongeEventHandler
+	@Subscribe
 	public void onBlockBreak(BlockBreakEvent event) // TODO replace dummy event when supported
 	{
 		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getWorld());
