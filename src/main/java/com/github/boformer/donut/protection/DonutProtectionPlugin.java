@@ -1,6 +1,6 @@
 package com.github.boformer.donut.protection;
 
-import org.spongepowered.api.event.SpongeEventHandler;
+import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 
@@ -14,7 +14,7 @@ public class DonutProtectionPlugin
 	private DataManager dataManager;
 
 
-	@SpongeEventHandler
+	@Subscribe
 	public void onInit(PreInitializationEvent event)
 	{
 		// init ConfigManager
@@ -29,7 +29,7 @@ public class DonutProtectionPlugin
 		event.getGame().getEventManager().register(new BlockEventHandler(this));
 	}
 
-	@SpongeEventHandler
+	@Subscribe
 	public void onStop(ServerStoppingEvent event)
 	{
 		// TODO
