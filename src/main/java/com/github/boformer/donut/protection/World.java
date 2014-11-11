@@ -8,7 +8,7 @@ public class World implements PermissionObject
 {
 	private final String name;
 	private final UUID uniqueID;
-	
+
 	ProtectionType protectionType;
 
 	public String getName() {
@@ -18,7 +18,7 @@ public class World implements PermissionObject
 	public UUID getUniqueID() {
 		return uniqueID;
 	}
-	
+
 	public ProtectionType getProtectionType() {
 		return protectionType;
 	}
@@ -30,5 +30,7 @@ public class World implements PermissionObject
 	public World(String name, UUID uniqueID) {
 		this.name = name;
 		this.uniqueID = uniqueID;
+
+		this.protectionType = ProtectionType.FREEBUILD;
 	}
 }

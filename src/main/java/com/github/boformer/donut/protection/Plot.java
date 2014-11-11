@@ -6,9 +6,9 @@ public class Plot implements PermissionObject
 {
 	private final int x, z;
 	private final World world;
-	
+
 	private String name;
-	
+
 	private boolean inheritWorldPermissions;
 
 	public int getX() {
@@ -18,7 +18,7 @@ public class Plot implements PermissionObject
 	public int getZ() {
 		return z;
 	}
-	
+
 	public World getWorld() {
 		return world;
 	}
@@ -41,7 +41,7 @@ public class Plot implements PermissionObject
 		return inheritWorldPermissions;
 	}
 
-	public void setInheritWorldPermissions(boolean inheritWorldPermissions) 
+	public void setInheritWorldPermissions(boolean inheritWorldPermissions)
 	{
 		this.inheritWorldPermissions = inheritWorldPermissions;
 	}

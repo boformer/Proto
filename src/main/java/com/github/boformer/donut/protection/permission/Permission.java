@@ -4,7 +4,7 @@ public class Permission
 {
 	private final PermissionSubject subject;
 	private final PermissionObject object;
-	
+
 	private String permissionString;
 
 	public PermissionSubject getSubject() {
@@ -14,7 +14,7 @@ public class Permission
 	public PermissionObject getObject() {
 		return object;
 	}
-	
+
 	public String getPermissionString() {
 		return permissionString;
 	}
