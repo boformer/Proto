@@ -4,32 +4,45 @@ import org.spongepowered.api.event.SpongeEventHandler;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 
-import com.github.boformer.donut.protection.data.DataStore;
+import com.github.boformer.donut.protection.config.ConfigManager;
+import com.github.boformer.donut.protection.data.DataManager;
 import com.github.boformer.donut.protection.event.BlockEventHandler;
 
 public class DonutProtectionPlugin
 {
-	private DataStore dataStore;
+	private ConfigManager configManager;
+	private DataManager dataManager;
+
 
 	@SpongeEventHandler
 	public void onInit(PreInitializationEvent event)
 	{
-		//TODO init Configuration
+		// init ConfigManager
+		configManager = new ConfigManager(this);
+		configManager.initialize();
 
-		//init DataStore
-		dataStore = new DataStore();
+		// init DataManager
+		dataManager = new DataManager(this);
+		dataManager.initialize();
 
-		//register events
+		// register events
 		event.getGame().getEventManager().register(new BlockEventHandler(this));
 	}
 
 	@SpongeEventHandler
 	public void onStop(ServerStoppingEvent event)
 	{
-
+		// TODO
 	}
 
-	public DataStore getDataStore() {
-		return dataStore;
+	public ConfigManager getConfigManager()
+	{
+		return configManager;
 	}
+
+	public DataManager getDataManager()
+	{
+		return dataManager;
+	}
+
 }

@@ -8,5 +8,6 @@ import org.spongepowered.api.world.Location;
 public interface BlockBreakEvent extends WorldEvent, Cancellable
 {
 	public Player getPlayer();
+
 	public Location getLocation();
 }

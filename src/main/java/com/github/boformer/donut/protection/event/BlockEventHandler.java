@@ -3,64 +3,107 @@ package com.github.boformer.donut.protection.event;
 import org.spongepowered.api.event.SpongeEventHandler;
 
 import com.github.boformer.donut.protection.DonutProtectionPlugin;
-import com.github.boformer.donut.protection.Player;
-import com.github.boformer.donut.protection.Plot;
-import com.github.boformer.donut.protection.ProtectionType;
-import com.github.boformer.donut.protection.World;
-import com.github.boformer.donut.protection.permission.Permissions;
-
+import com.github.boformer.donut.protection.config.WorldConfig;
+import com.github.boformer.donut.protection.data.PlotData;
+import com.github.boformer.donut.protection.data.PlotID;
+import com.github.boformer.donut.protection.data.PlotStatus;
+import com.github.boformer.donut.protection.util.PlotUtil;
 import dummy.sponge.BlockBreakEvent;
+import dummy.sponge.Dummy;
 
 public class BlockEventHandler
 {
 	private final DonutProtectionPlugin plugin;
 
-	public BlockEventHandler(DonutProtectionPlugin plugin) {
+
+	public BlockEventHandler(DonutProtectionPlugin plugin)
+	{
 		this.plugin = plugin;
 	}
 
+	//TODO onblockplace
+	
 	@SpongeEventHandler
-	public void onBlockBreak(BlockBreakEvent event) //TODO replace dummy event when supported
+	public void onBlockBreak(BlockBreakEvent event) // TODO replace dummy event when supported
 	{
-		World world = plugin.getDataStore().getWorld(event.getWorld());
+		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getWorld());
 
-		//freebuild world? --> our job ends here
-		if(world.getProtectionType() == ProtectionType.FREEBUILD)
+		//no config -> not our job
+		if(worldConfig == null) return;
+
+		
+		if(worldConfig.plotsEnabled)
 		{
-			return;
-		}
-
-
-		Player player = plugin.getDataStore().getPlayer(event.getPlayer());
-
-		if(world.getProtectionType() == ProtectionType.PLOTS)
-		{
-			Plot plot = plugin.getDataStore().getPlot(event.getLocation());
-
-			//plot doesn't inherit permissions from world --> no other way to get permission
-			//TODO
-
-			if(!plot.isInheritWorldPermissions())
+			// plots enabled -> check plot permissions
+			
+			PlotID plotID = PlotUtil.calculatePlotID(event.getLocation().getPosition(), event.getWorld(), worldConfig);
+			PlotData plotData = plugin.getDataManager().getPlotData(plotID);
+			
+			
+			if(plotData.getStatus() != PlotStatus.PUBLIC) 
 			{
-
-				//TODO
-				return;
+				//plot is not public -> now check permissions
+				
+				//1. server
+				if(Dummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "donut.protection.build.plot." + plotID.getX() + "." + plotID.getZ())) 
+				{
+					//player has permission in plot
+					return;
+				}
+				
+				//2. plugin
+				else if(plugin.getDataManager().hasPlotPermission(Dummy.getPlayerUniqueId(event.getPlayer()), plotID, "build")) 
+				{
+					//player has permission in plot
+					return;
+				}
+				else
+				{
+					//player has no permission
+					event.getPlayer().sendMessage("You do not have the permission to build in this plot!");
+					event.setCancelled(true);
+					return;
+					
+					//TODO display plot owner info!
+				}
 			}
 		}
-
-		if(world.getProtectionType() == ProtectionType.WHITELIST)
+		
+		//plots not enabled or public plot -> check world permissions
+		
+		//permission sources: 1. server, 2. plugin 
+		
+		//1. server
+		if(Dummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "donut.protection.build")) 
 		{
-			//check player permission
-			if(plugin.getDataStore().hasPermission(player, world, Permissions.BUILD))
+			//player has permission in world
+			return;
+		}
+		
+		//2. plugin
+		else if(plugin.getDataManager().hasWorldPermission(Dummy.getPlayerUniqueId(event.getPlayer()), event.getWorld().getUniqueID(), "build")) 
+		{
+			//player has permission in world
+			return;
+		}
+		
+		else
+		{
+			//player has no permission
+			
+			if(worldConfig.plotsEnabled) 
 			{
-				return;
+				event.getPlayer().sendMessage("You do not have the permission to build in this plot!");
+				//TODO display info how to claim if player has 'claim' permission
 			}
 			else
 			{
-				//--> player has no permission
-				event.setCancelled(true);
-				event.getPlayer().sendMessage("You do not have the permission to build in this world!"); //TODO messages
+				event.getPlayer().sendMessage("You do not have the permission to build in this world!");
+				//TODO display info how to get permission (list managers/owners of the world)
 			}
+			
+			event.setCancelled(true);
+			return;
 		}
 	}
 }
