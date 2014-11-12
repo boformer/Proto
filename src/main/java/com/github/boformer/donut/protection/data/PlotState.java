@@ -1,6 +1,6 @@
 package com.github.boformer.donut.protection.data;
 
-public class PlotStatus
+public class PlotState
 {
 	public final static int PUBLIC = 0;
 	public final static int CLAIMED = 1;

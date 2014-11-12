@@ -70,7 +70,7 @@ public class DataManager
 			//ensure the data tables exist
 			Statement statement = databaseConnection.createStatement();
 			
-			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "plots               (id INT NOT NULL AUTO_INCREMENT, world_id INT(15) NOT NULL, x INT(15) NOT NULL, z INT(15) NOT NULL, name VARCHAR(16), status INT(5) NOT NULL)");
+			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "plots               (id INT NOT NULL AUTO_INCREMENT, world_id INT(15) NOT NULL, x INT(15) NOT NULL, z INT(15) NOT NULL, name VARCHAR(16), state INT(5) NOT NULL)");
 			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "players             (id INT NOT NULL AUTO_INCREMENT, uuid CHAR(36) NOT NULL, name VARCHAR(16) NOT NULL)");
 			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "worlds              (id INT NOT NULL AUTO_INCREMENT, uuid CHAR(36) NOT NULL, name VARCHAR(50) NOT NULL)");
 			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "groups              (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(16) NOT NULL");
@@ -181,7 +181,7 @@ public class DataManager
 			refreshDatabaseConnection();
 			
 			PreparedStatement statement = databaseConnection.prepareStatement(
-					  "SELECT plot.name, plot.status "
+					  "SELECT plot.name, plot.state "
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
 					+ "WHERE plot.world_id = world.id "
 					+ "AND world.uuid = ? " //1
@@ -199,7 +199,7 @@ public class DataManager
 				PlotData plotData = new PlotData(plotID);
 				
 				plotData.setName(resultSet.getString("name"));
-				plotData.setStatus(resultSet.getInt("status"));
+				plotData.setState(resultSet.getInt("state"));
 				
 				//update cache
 				plotDataCache.put(plotID, plotData);

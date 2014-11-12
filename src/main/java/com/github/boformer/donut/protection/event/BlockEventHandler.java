@@ -6,7 +6,7 @@ import com.github.boformer.donut.protection.DonutProtectionPlugin;
 import com.github.boformer.donut.protection.config.WorldConfig;
 import com.github.boformer.donut.protection.data.PlotData;
 import com.github.boformer.donut.protection.data.PlotID;
-import com.github.boformer.donut.protection.data.PlotStatus;
+import com.github.boformer.donut.protection.data.PlotState;
 import com.github.boformer.donut.protection.util.PlotUtil;
 
 import dummy.sponge.BlockBreakEventDummy;
@@ -50,7 +50,7 @@ public class BlockEventHandler
 				PlotID plotID = PlotUtil.calculatePlotID(event.getLocation().getPosition(), event.getWorld(), worldConfig);
 				PlotData plotData = plugin.getDataManager().getPlotData(plotID);
 			
-				if(plotData.getStatus() != PlotStatus.PUBLIC) 
+				if(plotData.getState() != PlotState.PUBLIC) 
 				{
 					//plot is not public -> now check permissions
 					

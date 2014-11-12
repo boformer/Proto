@@ -4,16 +4,16 @@ public class PlotData
 {
 	private final PlotID plotID;
 	private String name;
-	private int status;
+	private int state;
 
-	public int getStatus()
+	public int getState()
 	{
-		return status;
+		return state;
 	}
 
-	public void setStatus(int status)
+	public void setState(int state)
 	{
-		this.status = status;
+		this.state = state;
 	}
 
 	public String getName()
