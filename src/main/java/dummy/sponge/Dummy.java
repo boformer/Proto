@@ -18,10 +18,4 @@ public class Dummy
 		//TODO
 		return false;
 	}
-	
-	public static boolean hasGlobalPermission(Player player, String permission) 
-	{
-		//TODO
-		return false;
-	}
 }
