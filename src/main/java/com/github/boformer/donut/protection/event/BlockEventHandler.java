@@ -27,6 +27,15 @@ public class BlockEventHandler
 	@Subscribe
 	public void onBlockBreak(BlockBreakEvent event) // TODO replace dummy event when supported
 	{
+		/*
+		 * What it does: 
+		 * 1. no world config --> just ignore the event. return
+		 * 2. plots enabled --> load plot data
+		 *  	a) plot is claimed --> check server and plugin plot permission --> return
+		 * 		b) plot is public --> continue with 3.
+		 * 3. check server and plugin world permission --> return
+		 */
+		
 		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getWorld());
 
 		//no config -> not our job
