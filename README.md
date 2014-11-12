@@ -1,4 +1,4 @@
 DonutProtection
 ===============
 
-Plot and World Protection API for Minecraft Multiplayer
+Plot and World Protection Plugin for Sponge Minecraft Multiplayer Servers
