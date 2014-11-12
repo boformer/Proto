@@ -1,7 +1,5 @@
 package com.github.boformer.donut.protection.data;
 
-import java.util.UUID;
-
 public class PlotData
 {
 	private final PlotID plotID;
@@ -11,6 +9,11 @@ public class PlotData
 	public int getStatus()
 	{
 		return status;
+	}
+
+	public void setStatus(int status)
+	{
+		this.status = status;
 	}
 
 	public String getName()

@@ -1,5 +1,6 @@
 package com.github.boformer.donut.protection;
 
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
@@ -10,20 +11,32 @@ import com.github.boformer.donut.protection.event.BlockEventHandler;
 
 public class DonutProtectionPlugin
 {
+	private Logger logger;
+	
 	private ConfigManager configManager;
 	private DataManager dataManager;
-
 
 	@Subscribe
 	public void onInit(PreInitializationEvent event)
 	{
+		logger = event.getPluginLog();
+		
 		// init ConfigManager
 		configManager = new ConfigManager(this);
 		configManager.initialize();
 
 		// init DataManager
 		dataManager = new DataManager(this);
-		dataManager.initialize();
+		
+		try
+		{
+			dataManager.initialize();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return;
+		}
 
 		// register events
 		event.getGame().getEventManager().register(new BlockEventHandler(this));
@@ -43,6 +56,11 @@ public class DonutProtectionPlugin
 	public DataManager getDataManager()
 	{
 		return dataManager;
+	}
+	
+	public Logger getLogger() 
+	{
+		return logger;
 	}
 
 }

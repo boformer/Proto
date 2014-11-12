@@ -2,13 +2,17 @@ package com.github.boformer.donut.protection.data;
 
 public class GroupData
 {
-	private final int id;
+	private int id;
 	private String name;
-
-
+	
 	public int getId()
 	{
 		return id;
+	}
+	
+	public void setId(int id)
+	{
+		this.id = id;
 	}
 
 	public String getName()
@@ -19,10 +23,5 @@ public class GroupData
 	public void setName(String name)
 	{
 		this.name = name;
-	}
-
-	public GroupData(int id)
-	{
-		this.id = id;
 	}
 }

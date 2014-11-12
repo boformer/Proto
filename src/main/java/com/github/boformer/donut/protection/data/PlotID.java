@@ -29,4 +29,32 @@ public class PlotID
 		this.z = z;
 		this.worldID = worldID;
 	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((worldID == null) ? 0 : worldID.hashCode());
+		result = prime * result + x;
+		result = prime * result + z;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		PlotID other = (PlotID) obj;
+		if (worldID == null)
+		{
+			if (other.worldID != null) return false;
+		}
+		else if (!worldID.equals(other.worldID)) return false;
+		if (x != other.x) return false;
+		if (z != other.z) return false;
+		return true;
+	}
 }
