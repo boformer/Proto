@@ -5,7 +5,7 @@ import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.world.WorldEvent;
 import org.spongepowered.api.world.Location;
 
-public interface BlockBreakEvent extends WorldEvent, Cancellable
+public interface BlockPlaceEventDummy extends WorldEvent, Cancellable
 {
 	public Player getPlayer();
 

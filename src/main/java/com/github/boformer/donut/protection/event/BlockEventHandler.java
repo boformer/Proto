@@ -9,7 +9,7 @@ import com.github.boformer.donut.protection.data.PlotID;
 import com.github.boformer.donut.protection.data.PlotStatus;
 import com.github.boformer.donut.protection.util.PlotUtil;
 
-import dummy.sponge.BlockBreakEvent;
+import dummy.sponge.BlockBreakEventDummy;
 import dummy.sponge.Dummy;
 
 public class BlockEventHandler
@@ -25,7 +25,7 @@ public class BlockEventHandler
 	//TODO onblockplace
 	
 	@Subscribe
-	public void onBlockBreak(BlockBreakEvent event) // TODO replace dummy event when supported
+	public void onBlockBreak(BlockBreakEventDummy event) // TODO replace dummy event when supported
 	{
 		/*
 		 * What it does: 
