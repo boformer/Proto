@@ -4,11 +4,13 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
+import org.spongepowered.api.plugin.Plugin;
 
 import com.github.boformer.donut.protection.config.ConfigManager;
 import com.github.boformer.donut.protection.data.DataManager;
 import com.github.boformer.donut.protection.event.BlockEventHandler;
 
+@Plugin(id = "DonutProtection", name = "DonutProtection", version = "1.0.0")
 public class DonutProtectionPlugin
 {
 	private Logger logger;

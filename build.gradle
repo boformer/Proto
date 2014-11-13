@@ -2,12 +2,15 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 
 sourceCompatibility = 1.7
-version = '1.0'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
     maven {
     	url "http://repo.thomas15v.net/plugins"
+    }    
+    maven {
+    	url "http://maven.sk89q.com/repo/"
     }
 }
 
@@ -15,7 +18,8 @@ dependencies {
     compile group: 'org.spongepowered', name: 'spongeapi', version: '1.0.0-SNAPSHOT'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.34'
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.0'
-    testCompile 'junit:junit:4.11'
+    compile group: 'com.sk89q', name: 'worldedit', version: '5.6.3'
+    //testCompile 'junit:junit:4.11'
     //compile 'com.google.guava:guava:16.0'
     //compile group: 'com.typesafe', name: 'config', version: '1.2.1'
 }
