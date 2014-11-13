@@ -72,12 +72,47 @@ public class DataManager
 			//ensure the data tables exist
 			Statement statement = databaseConnection.createStatement();
 			
-			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "plots               (id INT NOT NULL AUTO_INCREMENT, world_id INT(15) NOT NULL, x INT(15) NOT NULL, z INT(15) NOT NULL, name VARCHAR(16), state INT(5) NOT NULL, creation_date TIMESTAMP, last_mod_date TIMESTAMP)");
-			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "players             (id INT NOT NULL AUTO_INCREMENT, uuid CHAR(36) NOT NULL, name VARCHAR(16) NOT NULL)");
-			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "worlds              (id INT NOT NULL AUTO_INCREMENT, uuid CHAR(36) NOT NULL, name VARCHAR(50) NOT NULL)");
-			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "groups              (id INT NOT NULL AUTO_INCREMENT, name VARCHAR(16) NOT NULL");
-			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "player_world_access (id INT NOT NULL AUTO_INCREMENT, player_id INT(15) NOT NULL, world_id INT(15) NOT NULL, permission VARCHAR(50) NOT NULL)");
-			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "player_plot_access  (id INT NOT NULL AUTO_INCREMENT, player_id INT(15) NOT NULL, plot_id INT(15) NOT NULL, permission VARCHAR(50) NOT NULL)");
+			//plots
+			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "plots ("
+					+ "id INT NOT NULL AUTO_INCREMENT, "
+					+ "world_id INT(15) NOT NULL, "
+					+ "x INT(15) NOT NULL, "
+					+ "z INT(15) NOT NULL, "
+					+ "name VARCHAR(16), "
+					+ "state INT(5) NOT NULL, "
+					+ "creation_date TIMESTAMP, "
+					+ "last_mod_date TIMESTAMP)");
+			
+			//players
+			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "players ("
+					+ "id INT NOT NULL AUTO_INCREMENT, "
+					+ "uuid CHAR(36) NOT NULL, "
+					+ "name VARCHAR(16) NOT NULL)");
+			
+			//worlds
+			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "worlds ("
+					+ "id INT NOT NULL AUTO_INCREMENT, "
+					+ "uuid CHAR(36) NOT NULL, "
+					+ "name VARCHAR(50) NOT NULL)");
+			
+			//groups
+			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "groups ("
+					+ "id INT NOT NULL AUTO_INCREMENT, "
+					+ "name VARCHAR(16) NOT NULL");
+			
+			//world access
+			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "player_world_access ("
+					+ "id INT NOT NULL AUTO_INCREMENT, "
+					+ "player_id INT(15) NOT NULL, "
+					+ "world_id INT(15) NOT NULL, "
+					+ "permission VARCHAR(50) NOT NULL)");
+			
+			//plot access
+			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "player_plot_access ("
+					+ "id INT NOT NULL AUTO_INCREMENT, "
+					+ "player_id INT(15) NOT NULL, "
+					+ "plot_id INT(15) NOT NULL, "
+					+ "permission VARCHAR(50) NOT NULL)");
 		}
 		catch(Exception e) 
 		{
