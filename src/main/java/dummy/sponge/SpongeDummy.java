@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.spongepowered.api.entity.Player;
 import org.spongepowered.api.world.World;
 
-public class Dummy
+public class SpongeDummy
 {
 	public static UUID getPlayerUniqueId(Player player)
 	{
@@ -17,6 +17,12 @@ public class Dummy
 	{
 		//TODO
 		return null;
+	}
+	
+	public static int getWorldMaxHeight(World world) 
+	{
+		//TODO
+		return 256;
 	}
 
 	public static boolean hasWorldPermission(Player player, World world, String permission)
