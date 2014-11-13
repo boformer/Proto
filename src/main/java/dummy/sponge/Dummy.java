@@ -7,15 +7,22 @@ import org.spongepowered.api.world.World;
 
 public class Dummy
 {
-	public static UUID getPlayerUniqueId(Player player) 
+	public static UUID getPlayerUniqueId(Player player)
 	{
 		//TODO
 		return null;
 	}
-	
-	public static boolean hasWorldPermission(Player player, World world, String permission) 
+
+	public static World getPlayerWorld(Player player)
+	{
+		//TODO
+		return null;
+	}
+
+	public static boolean hasWorldPermission(Player player, World world, String permission)
 	{
 		//TODO
 		return false;
 	}
+
 }
