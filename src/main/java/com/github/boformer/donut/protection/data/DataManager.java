@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.collections4.map.LRUMap;
@@ -97,6 +98,7 @@ public class DataManager
 		}
 	}
 
+	//TODO fix get methods (wrong path)
 	
 	public WorldData getWorldData(UUID worldID) throws Exception
 	{
@@ -377,6 +379,37 @@ public class DataManager
 		catch(Exception e)
 		{
 			plugin.getLogger().error("Unable to load plot access data: " + e.getMessage());
+			e.printStackTrace();
+			
+			throw e;
+		}
+	}
+
+	//methods for plotcheck
+	public List<PlotID> getPlotsByState(int state) throws Exception
+	{
+		try
+		{
+			refreshDatabaseConnection();
+			
+			PreparedStatement statement = databaseConnection.prepareStatement(
+					  "SELECT world.uuid, plot.x, plot.z"
+					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
+					+ "WHERE world.id = plot.world_id"
+					+ "AND world.uuid = ? " //1
+					+ "AND plot.x = ? " //2
+					+ "AND plot.z = ?"); //3
+			
+			//TODO
+
+			ResultSet resultSet = statement.executeQuery();
+			
+			//TODO
+			return null;
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().error("Unable to load plot data: " + e.getMessage());
 			e.printStackTrace();
 			
 			throw e;
