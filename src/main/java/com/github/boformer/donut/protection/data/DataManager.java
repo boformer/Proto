@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections4.map.LRUMap;
@@ -425,7 +426,7 @@ public class DataManager
 	}
 
 	//methods for plotcheck
-	public List<PlotID> getPlotsByState(int state, Date latestCreationDate, UUID worldID) throws Exception
+	public List<PlotID> getPlotsByPermission(int state, Date latestCreationDate, UUID worldID) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -519,5 +520,11 @@ public class DataManager
 		{
 			statement.close();
 		}
+	}
+
+	public Set<PlotID> getPlotsByPermission(UUID playerID, UUID worldID, String permission)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

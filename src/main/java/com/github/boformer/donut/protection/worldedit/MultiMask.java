@@ -13,17 +13,6 @@ public class MultiMask implements Mask
 {
 	private List<Mask> masks = new ArrayList<Mask>();
 
-
-	public MultiMask(Mask mask)
-	{
-		masks.add(mask);
-	}
-
-	public MultiMask(List<Mask> masks)
-	{
-		this.masks.addAll(masks);
-	}
-
 	public void add(Mask mask)
 	{
 		masks.add(mask);

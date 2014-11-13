@@ -1,15 +1,22 @@
 package com.github.boformer.donut.protection.worldedit;
 
+import java.util.Set;
+
 import org.spongepowered.api.entity.Player;
 import org.spongepowered.api.world.World;
 
 import com.github.boformer.donut.protection.DonutProtectionPlugin;
 import com.github.boformer.donut.protection.config.WorldConfig;
 import com.github.boformer.donut.protection.data.PlotID;
+import com.github.boformer.donut.protection.data.WorldData;
+import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.masks.Mask;
+import com.sk89q.worldedit.masks.RegionMask;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 
 import dummy.sponge.SpongeDummy;
 import dummy.worldedit.WorldEditDummy;
@@ -32,16 +39,41 @@ public class WorldEditConnector
 		//TODO create masks for all logged in players
 	}
 	
+	//TODO add methods for snapshot restore
+	//TODO subscribe to events
+	
 	private void createMask(Player player) 
 	{
 		World world = SpongeDummy.getPlayerWorld(player);
 		
-		//TODO
+		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world);
+		
+		//TODO player bypassing?
+		if(worldConfig == null)
+		{
+			//no configuration --> not our deal. remove mask
+			clearMask(player);
+		}
+		
+		MultiMask mask = new MultiMask();
+		
+		Set<PlotID> worldEditPlots = plugin.getDataManager().getPlotsByPermission(SpongeDummy.getPlayerUniqueId(player), world.getUniqueID(), "worldedit");
+		
+		for(PlotID plotID : worldEditPlots)  
+		{
+			Region region = getRegionForPlot(plotID, world, worldConfig);
+			
+			mask.add(new RegionMask(region));
+		}
+		
+		LocalSession session = worldEdit.getSession(WorldEditDummy.getLocalPlayer(player));
+		session.setMask(mask);
 	}
 	
 	public void clearMask(Player player) 
 	{
-		//TODO
+		LocalSession session = worldEdit.getSession(WorldEditDummy.getLocalPlayer(player));
+		session.setMask(null);
 	}
 	
 	private static CuboidRegion getRegionForPlot(PlotID plotID, World world, WorldConfig worldConfig)

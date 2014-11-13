@@ -75,7 +75,7 @@ public class PlotCheckManager
 			//add plots to list
 			try
 			{
-				expiredPlots.addAll(plugin.getDataManager().getPlotsByState(PlotState.CLAIMED, calendar.getTime(), world.getUniqueID()));
+				expiredPlots.addAll(plugin.getDataManager().getPlotsByPermission(PlotState.CLAIMED, calendar.getTime(), world.getUniqueID()));
 			}
 			catch (Exception e)
 			{
