@@ -129,6 +129,14 @@ public class DataManager
 		
 	}
 	
+	public void stop() throws Exception
+	{
+		if(databaseConnection != null) 
+		{
+			databaseConnection.close();
+		}
+	}
+	
 	private void refreshDatabaseConnection() throws Exception
 	{
 		if(databaseConnection == null || databaseConnection.isClosed()) 
