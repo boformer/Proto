@@ -10,7 +10,7 @@ import com.github.boformer.donut.protection.data.PlotState;
 import com.github.boformer.donut.protection.util.PlotUtil;
 
 import dummy.sponge.BlockBreakEventDummy;
-import dummy.sponge.Dummy;
+import dummy.sponge.SpongeDummy;
 
 public class BlockEventHandler
 {
@@ -55,14 +55,14 @@ public class BlockEventHandler
 					//plot is not public -> now check permissions
 					
 					//1. server
-					if(Dummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "donut.protection.build.plot." + plotID.getX() + "." + plotID.getZ())) 
+					if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "donut.protection.build.plot." + plotID.getX() + "." + plotID.getZ())) 
 					{
 						//player has permission in plot
 						return;
 					}
 					
 					//2. plugin
-					else if(plugin.getDataManager().hasPlotAccess(Dummy.getPlayerUniqueId(event.getPlayer()), plotID, "build")) 
+					else if(plugin.getDataManager().hasPlotAccess(SpongeDummy.getPlayerUniqueId(event.getPlayer()), plotID, "build")) 
 					{
 						//player has permission in plot
 						return;
@@ -85,14 +85,14 @@ public class BlockEventHandler
 			//permission sources: 1. server, 2. plugin 
 			
 			//1. server
-			if(Dummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "donut.protection.build")) 
+			if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "donut.protection.build")) 
 			{
 				//player has permission in world
 				return;
 			}
 			
 			//2. plugin
-			else if(plugin.getDataManager().hasWorldAccess(Dummy.getPlayerUniqueId(event.getPlayer()), event.getWorld().getUniqueID(), "build")) 
+			else if(plugin.getDataManager().hasWorldAccess(SpongeDummy.getPlayerUniqueId(event.getPlayer()), event.getWorld().getUniqueID(), "build")) 
 			{
 				//player has permission in world
 				return;
