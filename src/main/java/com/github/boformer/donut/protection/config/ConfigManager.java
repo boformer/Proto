@@ -1,5 +1,7 @@
 package com.github.boformer.donut.protection.config;
 
+import java.util.List;
+
 import com.github.boformer.donut.protection.DonutProtectionPlugin;
 
 public class ConfigManager
@@ -22,11 +24,16 @@ public class ConfigManager
 		return null;
 	}
 	
+	//TODO use world UUID instead?
 	public WorldConfig getWorldConfig(org.spongepowered.api.world.World world) 
 	{
 		//TODO
 		return null;
 	}
-
-
+	
+	public List<String> getWorldNames() 
+	{
+		//TODO
+		return null;
+	}
 }

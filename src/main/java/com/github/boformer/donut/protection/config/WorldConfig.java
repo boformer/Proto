@@ -9,4 +9,6 @@ public class WorldConfig
 	
 	public int plotOriginX;
 	public int plotOriginZ;
+	
+	public int plotExpirationDays;
 }

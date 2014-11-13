@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +33,8 @@ public class DataManager
 	{
 		this.plugin = plugin;
 	}
+	
+	//TODO don't print stack trace/warning message when exception is passed up
 
 	public void initialize() throws Exception
 	{
@@ -421,21 +425,27 @@ public class DataManager
 	}
 
 	//methods for plotcheck
-	public List<PlotID> getPlotsByState(int state) throws Exception
+	public List<PlotID> getPlotsByState(int state, Date latestCreationDate, UUID worldID) throws Exception
 	{
+		PreparedStatement statement = null;
+		
 		try
 		{
 			refreshDatabaseConnection();
 			
-			PreparedStatement statement = databaseConnection.prepareStatement(
-					  "SELECT world.uuid, plot.x, plot.z"
+			statement = databaseConnection.prepareStatement(
+					  "SELECT plot.x, plot.z "
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
-					+ "WHERE plot.world_id = world.id"
-					+ "AND plot.state = ?"); //1
+					+ "WHERE plot.world_id = world.id "
+					+ "AND plot.state = ? " //1
+					+ "AND plot.creation_date < ? " //2
+					+ "AND world.uuid = ?"); //3
 
 			
 			statement.setInt(1, state);
-
+			statement.setTimestamp(2, new Timestamp(latestCreationDate.getTime()));
+			statement.setString(3, worldID.toString());
+			
 			ResultSet resultSet = statement.executeQuery();
 			
 			List<PlotID> plotList = new ArrayList<>();
@@ -444,7 +454,6 @@ public class DataManager
 			{
 				int x = resultSet.getInt("plot.x");
 				int z = resultSet.getInt("plot.x");
-				UUID worldID = UUID.fromString(resultSet.getString("world.uuid"));
 				
 				plotList.add(new PlotID(x, z, worldID));
 			}
@@ -457,6 +466,58 @@ public class DataManager
 			e.printStackTrace();
 			
 			throw e;
+		}
+		finally
+		{
+			statement.close();
+		}
+	}
+	
+	//methods for plotcheck
+	public List<PlotID> getPlotsByState(int state) throws Exception
+	{
+		PreparedStatement statement = null;
+		
+		try
+		{
+			refreshDatabaseConnection();
+			
+			statement = databaseConnection.prepareStatement(
+					  "SELECT world.uuid, plot.x, plot.z "
+					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
+					+ "WHERE plot.world_id = world.id "
+					+ "AND plot.state = ?"); //1
+
+
+			
+			statement.setInt(1, state);
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			List<PlotID> plotList = new ArrayList<>();
+			
+			while(resultSet.next()) 
+			{
+				UUID worldID = UUID.fromString(resultSet.getString("world.uuid"));
+				
+				int x = resultSet.getInt("plot.x");
+				int z = resultSet.getInt("plot.x");
+				
+				plotList.add(new PlotID(x, z, worldID));
+			}
+			
+			return plotList;
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().error("Unable to load plot data: " + e.getMessage());
+			e.printStackTrace();
+			
+			throw e;
+		}
+		finally
+		{
+			statement.close();
 		}
 	}
 }
