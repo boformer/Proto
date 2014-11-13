@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -395,17 +396,26 @@ public class DataManager
 			PreparedStatement statement = databaseConnection.prepareStatement(
 					  "SELECT world.uuid, plot.x, plot.z"
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
-					+ "WHERE world.id = plot.world_id"
-					+ "AND world.uuid = ? " //1
-					+ "AND plot.x = ? " //2
-					+ "AND plot.z = ?"); //3
+					+ "WHERE plot.world_id = world.id"
+					+ "AND plot.state = ?"); //1
+
 			
-			//TODO
+			statement.setInt(1, state);
 
 			ResultSet resultSet = statement.executeQuery();
 			
-			//TODO
-			return null;
+			List<PlotID> plotList = new ArrayList<>();
+			
+			while(resultSet.next()) 
+			{
+				int x = resultSet.getInt("plot.x");
+				int z = resultSet.getInt("plot.x");
+				UUID worldID = UUID.fromString(resultSet.getString("world.uuid"));
+				
+				plotList.add(new PlotID(x, z, worldID));
+			}
+			
+			return plotList;
 		}
 		catch(Exception e)
 		{
