@@ -24,8 +24,8 @@ public class ConfigManager
 		return null;
 	}
 	
-	//TODO use world UUID instead?
-	public WorldConfig getWorldConfig(org.spongepowered.api.world.World world) 
+	//TODO use world UUID instead? problem when world changes name?
+	public WorldConfig getWorldConfig(String name) 
 	{
 		//TODO
 		return null;

@@ -46,7 +46,7 @@ public class WorldEditConnector
 	{
 		World world = SpongeDummy.getPlayerWorld(player);
 		
-		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world);
+		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world.getName());
 		
 		//TODO player bypassing?
 		if(worldConfig == null)

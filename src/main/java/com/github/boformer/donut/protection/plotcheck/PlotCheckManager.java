@@ -64,7 +64,7 @@ public class PlotCheckManager
 			
 			if(world == null) continue; //world not loaded
 			
-			WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world);
+			WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world.getName());
 			
 			if(worldConfig.plotExpirationDays < 0) continue; //plot expiration disabled
 			

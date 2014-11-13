@@ -36,7 +36,7 @@ public class BlockEventHandler
 		 * 3. check server and plugin world permission --> return
 		 */
 		
-		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getWorld());
+		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getWorld().getName());
 
 		//no config -> not our job
 		if(worldConfig == null) return;
