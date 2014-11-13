@@ -134,8 +134,7 @@ public class DataManager
 		}
 	}
 
-	//TODO fix get methods (wrong path)
-	
+
 	public WorldData getWorldData(UUID worldID) throws Exception
 	{
 		try
@@ -153,7 +152,7 @@ public class DataManager
 			
 			if(resultSet.next()) 
 			{
-				String name = resultSet.getString("name");
+				String name = resultSet.getString("world.name");
 				return new WorldData(name, worldID);
 			}
 			else 
@@ -188,7 +187,7 @@ public class DataManager
 			
 			if(resultSet.next()) 
 			{
-				String name = resultSet.getString("name");
+				String name = resultSet.getString("player.name");
 				return new PlayerData(name, playerID);
 			}
 			else 
@@ -236,10 +235,10 @@ public class DataManager
 			{
 				PlotData plotData = new PlotData(plotID);
 				
-				plotData.setName(resultSet.getString("name"));
-				plotData.setState(resultSet.getInt("state"));
-				plotData.setCreationDate(resultSet.getTimestamp("creation_date"));
-				plotData.setLastModificationDate(resultSet.getTimestamp("last_mod_date"));
+				plotData.setName(resultSet.getString("plot.name"));
+				plotData.setState(resultSet.getInt("plot.state"));
+				plotData.setCreationDate(resultSet.getTimestamp("plot.creation_date"));
+				plotData.setLastModificationDate(resultSet.getTimestamp("plot.last_mod_date"));
 				
 				//update cache
 				plotDataCache.put(plotID, plotData);
@@ -268,7 +267,7 @@ public class DataManager
 			refreshDatabaseConnection();
 			
 			PreparedStatement statement = databaseConnection.prepareStatement(
-					  "SELECT name "
+					  "SELECT group.name "
 					+ "FROM " + databaseTablePrefix + "groups group"
 					+ "WHERE group.id = ?"); //1
 			
@@ -278,7 +277,7 @@ public class DataManager
 			
 			if(resultSet.next()) 
 			{
-				String name = resultSet.getString("name");
+				String name = resultSet.getString("group.name");
 				
 				GroupData groupData = new GroupData();
 				
