@@ -79,7 +79,7 @@ public class PlotCheckManager
 			}
 			catch (Exception e)
 			{
-				plugin.getLogger().error("Error while updating list of submitted plots: " + e.getMessage());
+				plugin.getLogger().error("Error while updating list of expired plots for world  '" + world.getName() +  "': " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
