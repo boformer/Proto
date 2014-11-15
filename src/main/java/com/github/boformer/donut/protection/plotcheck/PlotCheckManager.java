@@ -87,15 +87,13 @@ public class PlotCheckManager
 			calendar.setTime(currentDate);
 			calendar.add(Calendar.DATE, - worldConfig.plotExpirationDays);
 			
-			
 			//add plots to list
 			try
 			{
 				List<PlotID> plotList;
 				
 				//TODO use enums?
-				
-				//what happens when a plot is expired?
+				//when does a plot expire?
 				if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("CREATION")) 
 				{
 					plotList = plugin.getDataManager().getPlotsByLatestCreationDate(PlotState.CLAIMED, calendar.getTime(), world.getUniqueID());
@@ -119,6 +117,7 @@ public class PlotCheckManager
 				}
 			
 				//TODO use enums?
+				//what happens when a plot is expired?
 				if(worldConfig.plotExpirationAction.equalsIgnoreCase("STAFF_REVIEW")) 
 				{
 					expiredReviewPlots.addAll(plotList);
@@ -172,7 +171,7 @@ public class PlotCheckManager
 	}
 	
 	/**
-	 * Gets a random plot that was submitted by a player or a plot that is expired and should be reviewed by a staff member.
+	 * Gets a random plot that was submitted or a that is expired and should be reviewed by a staff member.
 	 * 
 	 * @return The plot ID or <code>null</code> if no plot found
 	 */
