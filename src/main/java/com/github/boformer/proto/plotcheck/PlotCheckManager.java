@@ -1,24 +1,25 @@
-package com.github.boformer.donut.protection.plotcheck;
+package com.github.boformer.proto.plotcheck;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
 import org.spongepowered.api.Game;
 import org.spongepowered.api.world.World;
 
-import com.github.boformer.donut.protection.DonutProtectionPlugin;
-import com.github.boformer.donut.protection.config.WorldConfig;
-import com.github.boformer.donut.protection.data.PlotID;
-import com.github.boformer.donut.protection.data.PlotState;
+import com.github.boformer.proto.ProtoPlugin;
+import com.github.boformer.proto.config.WorldConfig;
+import com.github.boformer.proto.data.PlotID;
+import com.github.boformer.proto.data.PlotState;
 
 /**
  * Manages the expired and submitted plots.
  */
 public class PlotCheckManager
 {
-	private final DonutProtectionPlugin plugin;
+	private final ProtoPlugin plugin;
 	private final Game game;
 	
 	private List<PlotID> submittedPlots;
@@ -40,7 +41,7 @@ public class PlotCheckManager
 	 * @param plugin
 	 * @param game
 	 */
-	public PlotCheckManager(DonutProtectionPlugin plugin, Game game)
+	public PlotCheckManager(ProtoPlugin plugin, Game game)
 	{
 		this.plugin = plugin;
 		this.game = game;

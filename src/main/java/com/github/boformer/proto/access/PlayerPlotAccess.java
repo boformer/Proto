@@ -1,8 +1,8 @@
-package com.github.boformer.donut.protection.access;
+package com.github.boformer.proto.access;
 
 import java.util.UUID;
 
-import com.github.boformer.donut.protection.data.PlotID;
+import com.github.boformer.proto.data.PlotID;
 
 /**
  * Represents a single permission of a player in a plot.

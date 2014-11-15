@@ -1,20 +1,20 @@
-package com.github.boformer.donut.protection.event;
+package com.github.boformer.proto.event;
 
 import org.spongepowered.api.event.Subscribe;
 
-import com.github.boformer.donut.protection.DonutProtectionPlugin;
-import com.github.boformer.donut.protection.config.WorldConfig;
-import com.github.boformer.donut.protection.data.PlotData;
-import com.github.boformer.donut.protection.data.PlotID;
-import com.github.boformer.donut.protection.data.PlotState;
-import com.github.boformer.donut.protection.util.PlotUtil;
+import com.github.boformer.proto.ProtoPlugin;
+import com.github.boformer.proto.config.WorldConfig;
+import com.github.boformer.proto.data.PlotData;
+import com.github.boformer.proto.data.PlotID;
+import com.github.boformer.proto.data.PlotState;
+import com.github.boformer.proto.util.PlotUtil;
 
 import dummy.sponge.BlockBreakEventDummy;
 import dummy.sponge.SpongeDummy;
 
 public class BlockEventHandler
 {
-	private final DonutProtectionPlugin plugin;
+	private final ProtoPlugin plugin;
 
 
 	/**
@@ -22,7 +22,7 @@ public class BlockEventHandler
 	 * 
 	 * @param plugin The plugin
 	 */
-	public BlockEventHandler(DonutProtectionPlugin plugin)
+	public BlockEventHandler(ProtoPlugin plugin)
 	{
 		this.plugin = plugin;
 	}

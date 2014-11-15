@@ -1,8 +1,8 @@
-package com.github.boformer.donut.protection.config;
+package com.github.boformer.proto.config;
 
 import java.util.List;
 
-import com.github.boformer.donut.protection.DonutProtectionPlugin;
+import com.github.boformer.proto.ProtoPlugin;
 
 /**
  * Provides and manages the plugin and world configuration.
@@ -10,18 +10,18 @@ import com.github.boformer.donut.protection.DonutProtectionPlugin;
  * <p>The configuration is stored in the suggested configuration file provided by the server.</p>
  * 
  * <p>The configuration should only be edited by the server admin (e.g. plot size), 
- * while the data managed by the {@link com.github.boformer.donut.protection.data.DataManager} is modified by the plugin at runtime (e.g. table of plots).</p>
+ * while the data managed by the {@link com.github.boformer.proto.data.DataManager} is modified by the plugin at runtime (e.g. table of plots).</p>
  */
 public class ConfigManager
 {
-	private final DonutProtectionPlugin plugin;
+	private final ProtoPlugin plugin;
 	
 	/** 
 	 * <i>Internal method: Create a new config manager.</i>
 	 * 
 	 * @param plugin The plugin
 	 */
-	public ConfigManager(DonutProtectionPlugin plugin)
+	public ConfigManager(ProtoPlugin plugin)
 	{
 		this.plugin = plugin;
 	}

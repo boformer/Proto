@@ -1,4 +1,4 @@
-package com.github.boformer.donut.protection.access;
+package com.github.boformer.proto.access;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package com.github.boformer.donut.protection.config;
+package com.github.boformer.proto.config;
 
 /**
  * Main plugin configuration.

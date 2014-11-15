@@ -1,4 +1,4 @@
-package com.github.boformer.donut.protection;
+package com.github.boformer.proto;
 
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.event.Subscribe;
@@ -6,17 +6,17 @@ import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
 
-import com.github.boformer.donut.protection.config.ConfigManager;
-import com.github.boformer.donut.protection.data.DataManager;
-import com.github.boformer.donut.protection.event.BlockEventHandler;
+import com.github.boformer.proto.config.ConfigManager;
+import com.github.boformer.proto.data.DataManager;
+import com.github.boformer.proto.event.BlockEventHandler;
 
 /**
  * The Plugin for Sponge. 
  * 
  * <p>This class listens for game state changes and provides access to data and config managers.</p>
  */
-@Plugin(id = "DonutProtection", name = "DonutProtection", version = "1.0.0")
-public class DonutProtectionPlugin
+@Plugin(id = "Proto", name = "Proto", version = "1.0.0")
+public class ProtoPlugin
 {
 	//TODO change some constructors to protected when possible
 	

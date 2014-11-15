@@ -1,6 +1,6 @@
-package com.github.boformer.donut.protection.data;
+package com.github.boformer.proto.data;
 
-import com.github.boformer.donut.protection.plotcheck.PlotCheckManager;
+import com.github.boformer.proto.plotcheck.PlotCheckManager;
 
 /**
  * Contains integers representing the state of a plot.

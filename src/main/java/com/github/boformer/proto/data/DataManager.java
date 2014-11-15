@@ -1,4 +1,4 @@
-package com.github.boformer.donut.protection.data;
+package com.github.boformer.proto.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,10 +14,10 @@ import java.util.UUID;
 
 import org.apache.commons.collections4.map.LRUMap;
 
-import com.github.boformer.donut.protection.DonutProtectionPlugin;
-import com.github.boformer.donut.protection.access.PlayerPlotAccess;
-import com.github.boformer.donut.protection.access.PlayerWorldAccess;
-import com.github.boformer.donut.protection.config.PluginConfig;
+import com.github.boformer.proto.ProtoPlugin;
+import com.github.boformer.proto.access.PlayerPlotAccess;
+import com.github.boformer.proto.access.PlayerWorldAccess;
+import com.github.boformer.proto.config.PluginConfig;
 
 /**
  * Provides and manages the data of the plugin.
@@ -25,11 +25,11 @@ import com.github.boformer.donut.protection.config.PluginConfig;
  * <p>The data is stored in a database.</p>
  * 
  * <p>The data is modified by the plugin at runtime (e.g. table of plots), 
- * while the configuration managed by {@link com.github.boformer.donut.protection.config.ConfigManager} should only be edited by the server admin (e.g. plot size).</p>
+ * while the configuration managed by {@link com.github.boformer.proto.config.ConfigManager} should only be edited by the server admin (e.g. plot size).</p>
  */
 public class DataManager
 {
-	private final DonutProtectionPlugin plugin;
+	private final ProtoPlugin plugin;
 	
 	private String databaseTablePrefix;
 	private Connection databaseConnection = null;
@@ -44,7 +44,7 @@ public class DataManager
 	 * 
 	 * @param plugin The plugin
 	 */
-	public DataManager(DonutProtectionPlugin plugin)
+	public DataManager(ProtoPlugin plugin)
 	{
 		this.plugin = plugin;
 	}

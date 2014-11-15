@@ -1,4 +1,4 @@
-package com.github.boformer.donut.protection.data;
+package com.github.boformer.proto.data;
 
 /**
  * Data of a group.

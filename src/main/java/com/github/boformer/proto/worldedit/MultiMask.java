@@ -1,4 +1,4 @@
-package com.github.boformer.donut.protection.worldedit;
+package com.github.boformer.proto.worldedit;
 
 import java.util.ArrayList;
 import java.util.List;

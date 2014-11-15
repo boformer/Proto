@@ -1,4 +1,4 @@
-package com.github.boformer.donut.protection.worldedit;
+package com.github.boformer.proto.worldedit;
 
 import java.util.Set;
 
@@ -6,10 +6,10 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.Player;
 import org.spongepowered.api.world.World;
 
-import com.github.boformer.donut.protection.DonutProtectionPlugin;
-import com.github.boformer.donut.protection.config.WorldConfig;
-import com.github.boformer.donut.protection.data.PlotID;
-import com.github.boformer.donut.protection.data.WorldData;
+import com.github.boformer.proto.ProtoPlugin;
+import com.github.boformer.proto.config.WorldConfig;
+import com.github.boformer.proto.data.PlotID;
+import com.github.boformer.proto.data.WorldData;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.LocalSession;
@@ -35,7 +35,7 @@ import dummy.worldedit.WorldEditDummy;
  */
 public class WorldEditConnector
 {
-	private final DonutProtectionPlugin plugin;
+	private final ProtoPlugin plugin;
 	private final Game game;
 	private final WorldEdit worldEdit;
 
@@ -46,7 +46,7 @@ public class WorldEditConnector
 	 * @param plugin The plugin
 	 * @param worldEdit The WorldEdit instance
 	 */
-	public WorldEditConnector(DonutProtectionPlugin plugin, Game game, WorldEdit worldEdit)
+	public WorldEditConnector(ProtoPlugin plugin, Game game, WorldEdit worldEdit)
 	{
 		this.plugin = plugin;
 		this.game = game;
