@@ -10,9 +10,6 @@ import org.spongepowered.api.world.Location;
  */
 public interface BlockBreakEventDummy extends WorldEvent, Cancellable
 {
-	/**
-	 * @return
-	 */
 	public Player getPlayer();
 
 	public Location getLocation();

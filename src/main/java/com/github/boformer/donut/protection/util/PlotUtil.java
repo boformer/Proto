@@ -19,7 +19,7 @@ public class PlotUtil
 	 * 
 	 * @param position The position (e.g. of a player) in a world
 	 * @param world The world
-	 * @param worldConfig The configuration that defines the plot grid. Can be obtained using {@link ConfigManager#getWorldConfig(world)}.
+	 * @param worldConfig The configuration that defines the plot grid. Can be obtained using {@link ConfigManager#getWorldConfig(String)}.
 	 * @return The calculated plot ID
 	 */
 	public static final PlotID calculatePlotID(Vector3d position, World world, WorldConfig worldConfig)

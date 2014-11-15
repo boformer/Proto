@@ -15,7 +15,7 @@ public class PlotState
 	public final static int PUBLIC = 0;
 	
 	/**
-	 * The state of a plot when a player claimed it. Plots with this state will be listed in {@link PlotCheckManager#getExpiredPlots()} if they are older than a configured amount of days.
+	 * The state of a plot when a player claimed it. Plots with this state will be listed in {@link PlotCheckManager#getExpiredReviewPlots()} or {@link PlotCheckManager#getExpiredDeletionPlots()} if they are older than a configured amount of days.
 	 */
 	public final static int CLAIMED = 1;
 	
