@@ -1,7 +1,6 @@
 package com.github.boformer.proto.worldedit;
 
-import java.util.Set;
-
+import java.util.List;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.Player;
 import org.spongepowered.api.world.World;
@@ -9,14 +8,12 @@ import org.spongepowered.api.world.World;
 import com.github.boformer.proto.ProtoPlugin;
 import com.github.boformer.proto.config.WorldConfig;
 import com.github.boformer.proto.data.PlotID;
-import com.github.boformer.proto.data.WorldData;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.masks.Mask;
 import com.sk89q.worldedit.masks.RegionMask;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
@@ -70,7 +67,7 @@ public class WorldEditConnector
 	 * Replaces the global mask of a player with an updated version containing only the plots where the player has WorldEdit permission.
 	 * @param player The player
 	 */
-	private void createMask(Player player) 
+	public void createMask(Player player) 
 	{
 		World world = SpongeDummy.getPlayerWorld(player);
 		
@@ -87,8 +84,22 @@ public class WorldEditConnector
 		}
 		
 		MultiMask mask = new MultiMask();
+		LocalSession session = worldEdit.getSession(WorldEditDummy.getLocalPlayer(player));
 		
-		Set<PlotID> worldEditPlots = plugin.getDataManager().getPlotsByPermission(SpongeDummy.getPlayerUniqueId(player), world.getUniqueID(), "worldedit");
+		List<PlotID> worldEditPlots;
+		try 
+		{
+			worldEditPlots = plugin.getDataManager().getPlotsByPermission(SpongeDummy.getPlayerUniqueId(player), world.getUniqueID(), "worldedit");
+		} 
+		catch (Exception e) 
+		{
+			// TODO add error message
+			e.printStackTrace();
+			
+			//set empty mask to prevent abuse
+			session.setMask(mask);
+			return;
+		}
 		
 		for(PlotID plotID : worldEditPlots)  
 		{
@@ -97,7 +108,6 @@ public class WorldEditConnector
 			mask.add(new RegionMask(region));
 		}
 		
-		LocalSession session = worldEdit.getSession(WorldEditDummy.getLocalPlayer(player));
 		session.setMask(mask);
 	}
 	
