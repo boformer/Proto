@@ -2,6 +2,7 @@ package com.github.boformer.donut.protection.worldedit;
 
 import java.util.Set;
 
+import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.Player;
 import org.spongepowered.api.world.World;
 
@@ -9,6 +10,8 @@ import com.github.boformer.donut.protection.DonutProtectionPlugin;
 import com.github.boformer.donut.protection.config.WorldConfig;
 import com.github.boformer.donut.protection.data.PlotID;
 import com.github.boformer.donut.protection.data.WorldData;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.Vector;
@@ -17,6 +20,7 @@ import com.sk89q.worldedit.masks.Mask;
 import com.sk89q.worldedit.masks.RegionMask;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.snapshots.Snapshot;
 
 import dummy.sponge.SpongeDummy;
 import dummy.worldedit.WorldEditDummy;
@@ -32,6 +36,7 @@ import dummy.worldedit.WorldEditDummy;
 public class WorldEditConnector
 {
 	private final DonutProtectionPlugin plugin;
+	private final Game game;
 	private final WorldEdit worldEdit;
 
 
@@ -41,9 +46,10 @@ public class WorldEditConnector
 	 * @param plugin The plugin
 	 * @param worldEdit The WorldEdit instance
 	 */
-	public WorldEditConnector(DonutProtectionPlugin plugin, WorldEdit worldEdit)
+	public WorldEditConnector(DonutProtectionPlugin plugin, Game game, WorldEdit worldEdit)
 	{
 		this.plugin = plugin;
+		this.game = game;
 		this.worldEdit = worldEdit;
 	}
 	
@@ -104,6 +110,34 @@ public class WorldEditConnector
 		LocalSession session = worldEdit.getSession(WorldEditDummy.getLocalPlayer(player));
 		session.setMask(null);
 	}
+	
+	
+	public void restorePlot(PlotID plotID) 
+	{
+		World world = game.getWorld(plotID.getWorldID());
+		
+		//TODO load world?
+		//TODO Important: put plot on a list of plots that have to be restored
+		if(world == null) return;
+		
+		//TODO get LocalWorld from plotID.worldID
+		LocalWorld localWorld = WorldEditDummy.getLocalWorld(world); // later change to 'SpongeUtil'?
+		
+		//TODO use worldData instead (for unloaded worlds)
+		String worldName = world.getName();
+		
+		LocalConfiguration worldEditConfig = worldEdit.getConfiguration();
+		EditSession session = new EditSession(localWorld, -1);
+		
+		Snapshot snapshot = null;
+		
+		if(worldEditConfig.snapshotRepo == null) 
+		{
+			plugin.getLogger().error("[WorldEditConnector] Snapshot/backup restore is not configured.");
+		}
+		
+		//TODO
+	}	
 	
 	private static CuboidRegion getRegionForPlot(PlotID plotID, World world, WorldConfig worldConfig)
 	{
