@@ -13,6 +13,9 @@ import com.github.boformer.donut.protection.config.WorldConfig;
 import com.github.boformer.donut.protection.data.PlotID;
 import com.github.boformer.donut.protection.data.PlotState;
 
+/**
+ * Manages the expired and submitted plots.
+ */
 public class PlotCheckManager
 {
 	private final DonutProtectionPlugin plugin;
@@ -21,11 +24,20 @@ public class PlotCheckManager
 	private List<PlotID> submittedPlots;
 	private List<PlotID> expiredPlots;
 	
-	Random random;
+	private final Random random;
 	
 	//TODO call updatePlotLists every x hours and notify staff members
 	//TODO Listen for plot state changes
 	
+	//TODO automatic deletion of expired plots?
+	//TODO configure which date is used for expiration: last player login, creation date, last mod date?
+	
+	/**
+	 * <i>Internal constructor: Constructs a new PlotCheck manager.</i>
+	 * 
+	 * @param plugin
+	 * @param game
+	 */
 	public PlotCheckManager(DonutProtectionPlugin plugin, Game game)
 	{
 		this.plugin = plugin;
@@ -85,16 +97,31 @@ public class PlotCheckManager
 		}
 	}
 
+	/**
+	 * Gets the list of submitted plots (state {@link PlotState#SUBMITTED}).
+	 * 
+	 * @return A list of plot IDs
+	 */
 	public List<PlotID> getSubmittedPlots()
 	{
 		return submittedPlots;
 	}
 
+	/**
+	 * Gets the list of expired plots.
+	 * 
+	 * @return A list of plot IDs
+	 */
 	public List<PlotID> getExpiredPlots()
 	{
 		return expiredPlots;
 	}
 	
+	/**
+	 * Gets a random plot that was submitted by a player or a plot that is expired.
+	 * 
+	 * @return The plot ID
+	 */
 	public PlotID getRandomPlot() 
 	{
 		if(submittedPlots.size() > 0 && random.nextBoolean()) 

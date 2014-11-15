@@ -17,6 +17,11 @@ public class BlockEventHandler
 	private final DonutProtectionPlugin plugin;
 
 
+	/**
+	 * <i>Internal constructor: Constructs a new block event handler that can be registered in the server plugin manager.</i>
+	 * 
+	 * @param plugin The plugin
+	 */
 	public BlockEventHandler(DonutProtectionPlugin plugin)
 	{
 		this.plugin = plugin;
@@ -24,6 +29,11 @@ public class BlockEventHandler
 
 	//TODO onblockplace
 	
+	/**
+	 * Called when a block is mined by a player.
+	 * 
+	 * @param event The block break event
+	 */
 	@Subscribe
 	public void onBlockBreak(BlockBreakEventDummy event) // TODO replace dummy event when supported
 	{

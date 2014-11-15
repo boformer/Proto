@@ -4,6 +4,11 @@ import java.util.UUID;
 
 import com.github.boformer.donut.protection.data.PlotID;
 
+/**
+ * Represents a single permission of a player in a plot.
+ * 
+ * <p><i>Usually this class is only used internally.</i></p>
+ */
 public class PlayerPlotAccess
 {
 	private final UUID playerID;
@@ -11,21 +16,43 @@ public class PlayerPlotAccess
 	private final String permission;
 
 
+	/**
+	 * Gets the unique identifier of the player.
+	 * 
+	 * @return The player UUID
+	 */
 	public UUID getPlayerID()
 	{
 		return playerID;
 	}
 
+	/**
+	 * Gets the identifier of the plot.
+	 * 
+	 * @return The plot ID
+	 */
 	public PlotID getPlotID()
 	{
 		return plotID;
 	}
 
+	/**
+	 * Gets the permission string.
+	 * 
+	 * @return The permission
+	 */
 	public String getPermission()
 	{
 		return permission;
 	}
 
+	/**
+	 * Creates a new permission node.
+	 * 
+	 * @param playerID The player UUID
+	 * @param plotID The plot ID
+	 * @param permission The permission
+	 */
 	public PlayerPlotAccess(UUID playerID, PlotID plotID, String permission)
 	{
 		this.playerID = playerID;

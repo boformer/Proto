@@ -21,18 +21,35 @@ import com.sk89q.worldedit.regions.Region;
 import dummy.sponge.SpongeDummy;
 import dummy.worldedit.WorldEditDummy;
 
+/**
+ * Handles all features that require the WorldEdit plugin:
+ * 
+ * <ul>
+ * <li>Restrict WorldEdit features to the plot of a player using the WorldEdit global mask</li>
+ * <li>Reset the area of a deleted plot to a snapshot of the world</li>
+ * </ul>
+ */
 public class WorldEditConnector
 {
 	private final DonutProtectionPlugin plugin;
 	private final WorldEdit worldEdit;
 
 
+	/**
+	 * <i>Internal constructor: Create a new WorldEdit connector.</i>
+	 * 
+	 * @param plugin The plugin
+	 * @param worldEdit The WorldEdit instance
+	 */
 	public WorldEditConnector(DonutProtectionPlugin plugin, WorldEdit worldEdit)
 	{
 		this.plugin = plugin;
 		this.worldEdit = worldEdit;
 	}
 	
+	/** 
+	 * <i>Internal method: Initializes the WorldEdit connector when the server starts up.</i>
+	 */
 	public void initialize() 
 	{
 		//TODO listen for events
@@ -41,7 +58,12 @@ public class WorldEditConnector
 	
 	//TODO add methods for snapshot restore
 	//TODO subscribe to events
+	//TODO update multimask instead of creating a new mask?
 	
+	/**
+	 * Replaces the global mask of a player with an updated version containing only the plots where the player has WorldEdit permission.
+	 * @param player The player
+	 */
 	private void createMask(Player player) 
 	{
 		World world = SpongeDummy.getPlayerWorld(player);
@@ -49,6 +71,9 @@ public class WorldEditConnector
 		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world.getName());
 		
 		//TODO player bypassing?
+		
+		//TODO add a permission protection.useworldeditonlyinplots and protection.dontuseworldeditatall and check that first
+		
 		if(worldConfig == null)
 		{
 			//no configuration --> not our deal. remove mask
@@ -70,6 +95,10 @@ public class WorldEditConnector
 		session.setMask(mask);
 	}
 	
+	/**
+	 * Clears the global mask of a player (e.g. when he leaves the plot world)
+	 * @param player The player
+	 */
 	public void clearMask(Player player) 
 	{
 		LocalSession session = worldEdit.getSession(WorldEditDummy.getLocalPlayer(player));

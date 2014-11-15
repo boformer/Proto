@@ -10,15 +10,27 @@ import com.github.boformer.donut.protection.config.ConfigManager;
 import com.github.boformer.donut.protection.data.DataManager;
 import com.github.boformer.donut.protection.event.BlockEventHandler;
 
+/**
+ * The Plugin for Sponge. 
+ * 
+ * <p>This class listens for game state changes and provides access to data and config managers.</p>
+ */
 @Plugin(id = "DonutProtection", name = "DonutProtection", version = "1.0.0")
 public class DonutProtectionPlugin
 {
+	//TODO change some constructors to protected when possible
+	
 	private Logger logger;
 
 	private ConfigManager configManager;
 	private DataManager dataManager;
 
 
+	/**
+	 * Called when server starts up.
+	 * 
+	 * @param event The server initialization event
+	 */
 	@Subscribe
 	public void onInit(PreInitializationEvent event)
 	{
@@ -30,7 +42,7 @@ public class DonutProtectionPlugin
 
 		// init DataManager
 		dataManager = new DataManager(this);
-
+		
 		try
 		{
 			dataManager.initialize();
@@ -44,7 +56,12 @@ public class DonutProtectionPlugin
 		// register events
 		event.getGame().getEventManager().register(new BlockEventHandler(this));
 	}
-
+	
+	/**
+	 * Called when server shuts down.
+	 * 
+	 * @param event The server stop event
+	 */
 	@Subscribe
 	public void onStop(ServerStoppingEvent event)
 	{
@@ -61,16 +78,31 @@ public class DonutProtectionPlugin
 		// TODO
 	}
 
+	/**
+	 * Gets the {@link ConfigManager}.
+	 * 
+	 * @return The config manager
+	 */
 	public ConfigManager getConfigManager()
 	{
 		return configManager;
 	}
-
+	
+	/**
+	 * Gets the {@link DataManager}.
+	 * 
+	 * @return The data manager
+	 */
 	public DataManager getDataManager()
 	{
 		return dataManager;
 	}
 
+	/**
+	 * Gets the Logger for this plugin.
+	 * 
+	 * @return The plugin logger
+	 */
 	public Logger getLogger()
 	{
 		return logger;

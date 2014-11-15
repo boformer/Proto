@@ -1,5 +1,8 @@
 package com.github.boformer.donut.protection.config;
 
+/**
+ * World configuration.
+ */
 public class WorldConfig
 {
 	public boolean plotsEnabled;

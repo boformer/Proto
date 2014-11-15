@@ -5,6 +5,9 @@ import java.util.UUID;
 import org.spongepowered.api.entity.Player;
 import org.spongepowered.api.world.World;
 
+/**
+ * Static placeholder class to replace missing features in the Sponge API. <u>Only for development!</u>
+ */
 public class SpongeDummy
 {
 	public static UUID getPlayerUniqueId(Player player)

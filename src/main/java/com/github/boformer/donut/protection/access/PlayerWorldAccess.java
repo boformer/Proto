@@ -2,6 +2,11 @@ package com.github.boformer.donut.protection.access;
 
 import java.util.UUID;
 
+/**
+ * Represents a single permission of a player in a world.
+ * 
+ * <p><i>Usually this class is only used internally.</i></p>
+ */
 public class PlayerWorldAccess
 {
 	private final UUID playerID;
@@ -9,21 +14,43 @@ public class PlayerWorldAccess
 	private final String permission;
 
 
+	/**
+	 * Gets the unique identifier of the player.
+	 * 
+	 * @return The player UUID
+	 */
 	public UUID getPlayerID()
 	{
 		return playerID;
 	}
 
+	/**
+	 * Gets the unique identifier of the world.
+	 * 
+	 * @return The world UUID
+	 */
 	public UUID getWorldID()
 	{
 		return worldID;
 	}
 
+	/**
+	 * Gets the permission string.
+	 * 
+	 * @return The permission
+	 */
 	public String getPermission()
 	{
 		return permission;
 	}
 
+	/**
+	 * Creates a new permission node.
+	 * 
+	 * @param playerID The player UUID
+	 * @param worldID The world UUID
+	 * @param permission The permission
+	 */
 	public PlayerWorldAccess(UUID playerID, UUID worldID, String permission)
 	{
 		this.playerID = playerID;

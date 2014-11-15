@@ -2,27 +2,52 @@ package com.github.boformer.donut.protection.data;
 
 import java.util.UUID;
 
+/**
+ * A plot identifier. Includes the world and the position of the plot in the plot grid.
+ */
 public class PlotID
 {
 	private final int x, z;
 	private final UUID worldID;
 
 
+	/**
+	 * Gets the x coordinate of the plot in the plot grid.
+	 * 
+	 * @return The x coordinate of the plot
+	 */
 	public int getX()
 	{
 		return x;
 	}
 
+	/**
+	 * Gets the z coordinate of the plot in the plot grid.
+	 * 
+	 * @return The z coordinate of the plot
+	 */
 	public int getZ()
 	{
 		return z;
 	}
 
+	/**
+	 * The unique identifier of the world where the plot is located.
+	 * 
+	 * @return The world UUID
+	 */
 	public UUID getWorldID()
 	{
 		return worldID;
 	}
 
+	/**
+	 * Creates a new plot ID.
+	 * 
+	 * @param x The x coordinate of the plot
+	 * @param z The z coordinate of the plot
+	 * @param worldID The world UUID
+	 */
 	public PlotID(int x, int z, UUID worldID)
 	{
 		this.x = x;
