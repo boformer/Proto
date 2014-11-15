@@ -498,7 +498,7 @@ public class DataManager
 
 	//method for plotcheck
 	/**
-	 * Gets a list of plots with a certain {@link PlotState}, creation date and world UUID.
+	 * Gets a list of plots with a certain {@link PlotState}, plot creation date and world UUID.
 	 * 
 	 * @param state The plot state
 	 * @param latestCreationDate The latest creation date: Only plots that were created before that date are included.
@@ -506,7 +506,7 @@ public class DataManager
 	 * @return A list of plot IDs
 	 * @throws Exception Database Exception
 	 */
-	public List<PlotID> getPlotsByPermission(int state, Date latestCreationDate, UUID worldID) throws Exception
+	public List<PlotID> getPlotsByLatestCreationDate(int state, Date latestCreationDate, UUID worldID) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -525,6 +525,83 @@ public class DataManager
 			
 			statement.setInt(1, state);
 			statement.setTimestamp(2, new Timestamp(latestCreationDate.getTime()));
+			statement.setString(3, worldID.toString());
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			List<PlotID> plotList = new ArrayList<>();
+			
+			while(resultSet.next()) 
+			{
+				int x = resultSet.getInt("plot.x");
+				int z = resultSet.getInt("plot.x");
+				
+				plotList.add(new PlotID(x, z, worldID));
+			}
+			
+			return plotList;
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().error("Unable to load plot data: " + e.getMessage());
+			e.printStackTrace();
+			
+			throw e;
+		}
+		finally
+		{
+			statement.close();
+		}
+	}
+	
+	//method for plotcheck
+
+	/**
+	 * Gets a list of plots with a certain {@link PlotState}, a latest login of a player with a certain permission (e.g. owner) and world UUID.
+	 * 
+	 * @param state The plot state
+	 * @param latestPlayerLoginDate The player login date: Only plots of players who did not log in after that date are included.
+	 * @param permission The permission
+	 * @param worldID The world UUID
+	 * @return A list of plot IDs
+	 * @throws Exception Database Exception
+	 */
+	public List<PlotID> getPlotsByLatestPlayerLoginDate(int state, Date latestPlayerLoginDate, String permission, UUID worldID) throws Exception
+	{
+		//TODO
+		
+		return null;
+	}
+	
+	//method for plotcheck
+	/**
+	 * Gets a list of plots with a certain {@link PlotState}, a certain modification date and world UUID.
+	 * 
+	 * @param state The plot state
+	 * @param latestModificationDate The latest modification date: Only plots that were last modified before that date are included.
+	 * @param worldID The world UUID
+	 * @return A list of plot IDs
+	 * @throws Exception Database Exception
+	 */
+	public List<PlotID> getPlotsByLatestModificationDate(int state, Date latestModificationDate, UUID worldID) throws Exception
+	{
+		PreparedStatement statement = null;
+		
+		try
+		{
+			refreshDatabaseConnection();
+			
+			statement = databaseConnection.prepareStatement(
+					  "SELECT plot.x, plot.z "
+					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
+					+ "WHERE plot.world_id = world.id "
+					+ "AND plot.state = ? " //1
+					+ "AND plot.modification_date < ? " //2
+					+ "AND world.uuid = ?"); //3
+
+			
+			statement.setInt(1, state);
+			statement.setTimestamp(2, new Timestamp(latestModificationDate.getTime()));
 			statement.setString(3, worldID.toString());
 			
 			ResultSet resultSet = statement.executeQuery();

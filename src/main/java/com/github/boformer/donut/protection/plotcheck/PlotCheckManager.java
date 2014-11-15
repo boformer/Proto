@@ -22,14 +22,16 @@ public class PlotCheckManager
 	private final Game game;
 	
 	private List<PlotID> submittedPlots;
-	private List<PlotID> expiredPlots;
+	private List<PlotID> expiredReviewPlots;
+	private List<PlotID> expiredDeletionPlots;
 	
 	private final Random random;
 	
 	//TODO call updatePlotLists every x hours and notify staff members
 	//TODO Listen for plot state changes
 	
-	//TODO automatic deletion of expired plots?
+	//TODO automatic deletion of expired plots: call automatic deletion method to delete plots when server is idling
+	
 	//TODO configure which date is used for expiration: last player login, creation date, last mod date?
 	
 	/**
@@ -68,7 +70,8 @@ public class PlotCheckManager
 		}
 		
 		//find expired plots in database
-		expiredPlots = new ArrayList<>();
+		expiredReviewPlots = new ArrayList<>();
+		expiredDeletionPlots = new ArrayList<>();
 		
 		for(String worldName : plugin.getConfigManager().getWorldNames())
 		{
@@ -84,10 +87,51 @@ public class PlotCheckManager
 			calendar.setTime(currentDate);
 			calendar.add(Calendar.DATE, - worldConfig.plotExpirationDays);
 			
+			
 			//add plots to list
 			try
 			{
-				expiredPlots.addAll(plugin.getDataManager().getPlotsByPermission(PlotState.CLAIMED, calendar.getTime(), world.getUniqueID()));
+				List<PlotID> plotList;
+				
+				//TODO use enums?
+				
+				//what happens when a plot is expired?
+				if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("CREATION")) 
+				{
+					plotList = plugin.getDataManager().getPlotsByLatestCreationDate(PlotState.CLAIMED, calendar.getTime(), world.getUniqueID());
+				}
+				else if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("LAST_MODIFICATION")) 
+				{
+					plotList = plugin.getDataManager().getPlotsByLatestModificationDate(PlotState.CLAIMED, calendar.getTime(), world.getUniqueID());
+				}
+				else if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("LAST_OWNER_LOGIN")) 
+				{
+					plotList = plugin.getDataManager().getPlotsByLatestPlayerLoginDate(PlotState.CLAIMED, calendar.getTime(), "owner", world.getUniqueID());
+				}
+				else if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("LAST_MANAGER_LOGIN")) 
+				{
+					plotList = plugin.getDataManager().getPlotsByLatestPlayerLoginDate(PlotState.CLAIMED, calendar.getTime(), "manager", world.getUniqueID());
+				}
+				else
+				{
+					//not configured -> next world
+					continue;
+				}
+			
+				//TODO use enums?
+				if(worldConfig.plotExpirationAction.equalsIgnoreCase("STAFF_REVIEW")) 
+				{
+					expiredReviewPlots.addAll(plotList);
+				}
+				else if(worldConfig.plotExpirationAction.equalsIgnoreCase("AUTO_DELETE")) 
+				{
+					expiredDeletionPlots.addAll(plotList);
+				}
+				else 
+				{
+					//not configured -> next world
+					continue;
+				}
 			}
 			catch (Exception e)
 			{
@@ -108,29 +152,39 @@ public class PlotCheckManager
 	}
 
 	/**
-	 * Gets the list of expired plots.
+	 * Gets the list of expired plots that are marked for deletion.
 	 * 
 	 * @return A list of plot IDs
 	 */
-	public List<PlotID> getExpiredPlots()
+	public List<PlotID> getExpiredDeletionPlots()
 	{
-		return expiredPlots;
+		return expiredDeletionPlots;
 	}
 	
 	/**
-	 * Gets a random plot that was submitted by a player or a plot that is expired.
+	 * Gets the list of expired plots that are marked for review.
 	 * 
-	 * @return The plot ID
+	 * @return A list of plot IDs
 	 */
-	public PlotID getRandomPlot() 
+	public List<PlotID> getExpiredReviewPlots()
+	{
+		return expiredReviewPlots;
+	}
+	
+	/**
+	 * Gets a random plot that was submitted by a player or a plot that is expired and should be reviewed by a staff member.
+	 * 
+	 * @return The plot ID or <code>null</code> if no plot found
+	 */
+	public PlotID getRandomReviewPlot() 
 	{
 		if(submittedPlots.size() > 0 && random.nextBoolean()) 
 		{
 			return submittedPlots.get(random.nextInt(submittedPlots.size()));
 		}
-		else if (expiredPlots.size() > 0)
+		else if (expiredReviewPlots.size() > 0)
 		{
-			return expiredPlots.get(random.nextInt(expiredPlots.size()));
+			return expiredReviewPlots.get(random.nextInt(expiredReviewPlots.size()));
 		}
 		else return null;
 	}
