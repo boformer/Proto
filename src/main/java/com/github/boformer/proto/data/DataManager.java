@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections4.map.LRUMap;
@@ -568,9 +567,53 @@ public class DataManager
 	 */
 	public List<PlotID> getPlotsByLatestPlayerLoginDate(int state, Date latestPlayerLoginDate, String permission, UUID worldID) throws Exception
 	{
-		//TODO
+		PreparedStatement statement = null;
 		
-		return null;
+		try
+		{
+			refreshDatabaseConnection();
+			
+			statement = databaseConnection.prepareStatement(
+					  "SELECT plot.x, plot.z "
+					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world, " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player "
+					+ "WHERE plot.world_id = world.id "
+					+ "AND plot.state = ? " //1
+					+ "AND plot.id = access.plot_id "
+					+ "AND player.id = access.player_id "
+					+ "AND player.last_login_date < ? " //2
+					+ "AND access.permission = ? " //3
+					+ "AND world.uuid = ?"); //4
+			
+			statement.setInt(1, state);
+			statement.setTimestamp(2, new Timestamp(latestPlayerLoginDate.getTime()));
+			statement.setString(3, permission);
+			statement.setString(4, worldID.toString());
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			List<PlotID> plotList = new ArrayList<>();
+			
+			while(resultSet.next()) 
+			{
+				int x = resultSet.getInt("plot.x");
+				int z = resultSet.getInt("plot.x");
+				
+				plotList.add(new PlotID(x, z, worldID));
+			}
+			
+			return plotList;
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().error("Unable to load plot data: " + e.getMessage());
+			e.printStackTrace();
+			
+			throw e;
+		}
+		finally
+		{
+			statement.close();
+		}
 	}
 	
 	//method for plotcheck
@@ -693,10 +736,55 @@ public class DataManager
 	 * @param worldID The world UUID
 	 * @param permission The permission
 	 * @return  A list of plot IDs
+	 * @throws Exception Database Exception
 	 */
-	public Set<PlotID> getPlotsByPermission(UUID playerID, UUID worldID, String permission)
+	public List<PlotID> getPlotsByPermission(UUID playerID, UUID worldID, String permission) throws Exception
 	{
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement statement = null;
+		
+		try
+		{
+			refreshDatabaseConnection();
+			
+			statement = databaseConnection.prepareStatement(
+					  "SELECT plot.x, plot.z "
+					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world, " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player "
+					+ "WHERE plot.world_id = world.id "
+					+ "AND plot.id = access.plot_id "
+					+ "AND player.id = access.player_id "
+					+ "AND player.uuid = ? " //1
+					+ "AND world.uuid = ? " //2
+					+ "AND access.permission = ? "); //3
+
+			
+			statement.setString(1, playerID.toString());
+			statement.setString(2, worldID.toString());
+			statement.setString(3, permission);
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			List<PlotID> plotList = new ArrayList<>();
+			
+			while(resultSet.next()) 
+			{
+				int x = resultSet.getInt("plot.x");
+				int z = resultSet.getInt("plot.x");
+				
+				plotList.add(new PlotID(x, z, worldID));
+			}
+			
+			return plotList;
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().error("Unable to load plot data: " + e.getMessage());
+			e.printStackTrace();
+			
+			throw e;
+		}
+		finally
+		{
+			statement.close();
+		}
 	}
 }
