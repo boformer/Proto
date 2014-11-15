@@ -53,7 +53,7 @@ public class ConfigManager
 	/**
 	 * Gets the configuration for a world.
 	 * 
-	 * <p>Returns {@code null} if there is no configuration for a world.</p>
+	 * <p>Returns <code>null</code> if there is no configuration for a world.</p>
 	 * 
 	 * <p>The plugin ignores worlds without a configuration.</p>
 	 * 
