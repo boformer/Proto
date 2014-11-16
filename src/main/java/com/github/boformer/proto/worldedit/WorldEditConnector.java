@@ -191,6 +191,7 @@ public class WorldEditConnector
 		//TODO player bypassing?
 		
 		//TODO add a permission proto.useworldeditonlyinplots and proto.dontuseworldeditatall and check that first
+		//https://github.com/boformer/Proto/wiki/Permissions
 		
 		if(worldConfig == null)
 		{

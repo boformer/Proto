@@ -37,7 +37,7 @@ public class ConfigManager
 	 */
 	public void initialize()
 	{
-		//TODO copy default plugin config
+		//TODO hocon: copy default plugin config
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class ConfigManager
 	 */
 	public PluginConfig getPluginConfig() 
 	{
-		//TODO
+		//TODO hocon
 		return null;
 	}
 	
@@ -64,7 +64,7 @@ public class ConfigManager
 	 */
 	public WorldConfig getWorldConfig(String name) 
 	{
-		//TODO
+		//TODO hocon
 		return null;
 	}
 	
@@ -105,7 +105,7 @@ public class ConfigManager
 	 */
 	public List<String> getWorldNames() 
 	{
-		//TODO
+		//TODO hocon
 		return null;
 	}
 }

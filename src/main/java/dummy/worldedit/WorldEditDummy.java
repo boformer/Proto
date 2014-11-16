@@ -13,13 +13,11 @@ public class WorldEditDummy
 {
 	public static LocalWorld getLocalWorld(World world) 
 	{
-		//TODO
 		return null;
 	}
 	
 	public static LocalPlayer getLocalPlayer(Player player) 
 	{
-		//TODO
 		return null;
 	}
 }
