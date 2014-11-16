@@ -18,7 +18,10 @@ import com.github.boformer.proto.event.BlockEventHandler;
 @Plugin(id = "Proto", name = "Proto", version = "1.0.0")
 public class ProtoPlugin
 {
-	//TODO change some constructors to protected when possible
+	//TODO change some constructors to protected when possible, or use interfaces?
+	//TODO call events
+	//TODO create data for loaded worlds in config on startup
+	//TODO worldgen plot regeneration
 	
 	private Logger logger;
 

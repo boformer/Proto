@@ -1,8 +1,10 @@
 package com.github.boformer.proto.config;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.github.boformer.proto.ProtoPlugin;
+import com.github.boformer.proto.data.WorldData;
 
 /**
  * Provides and manages the plugin and world configuration.
@@ -64,6 +66,37 @@ public class ConfigManager
 	{
 		//TODO
 		return null;
+	}
+	
+
+	/**
+	 * Gets the configuration for a world.
+	 * 
+	 * <p>Returns <code>null</code> if there is no configuration for a world.</p>
+	 * 
+	 * <p>The plugin ignores worlds without a configuration.</p>
+	 * 
+	 * @param worldID The world UUID
+	 * @return The world configuration
+	 */
+	public WorldConfig getWorldConfig(UUID worldID) 
+	{
+		WorldData worldData;
+		try
+		{
+			worldData = plugin.getDataManager().getWorldData(worldID);
+		}
+		catch (Exception e)
+		{
+			// TODO error message
+			e.printStackTrace();
+			
+			return null; //TODO on exception return special safe world-cfg (block...)
+		}
+		
+		if(worldData == null) return null;
+		
+		return getWorldConfig(worldData.getName());
 	}
 	
 	/**

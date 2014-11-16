@@ -4,8 +4,6 @@ import java.util.UUID;
 
 /**
  * Represents a single permission of a player in a world.
- * 
- * <p><i>Usually this class is only used internally.</i></p>
  */
 public class PlayerWorldAccess
 {

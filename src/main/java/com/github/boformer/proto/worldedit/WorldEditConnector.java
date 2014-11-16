@@ -1,24 +1,41 @@
 package com.github.boformer.proto.worldedit;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.world.World;
 
 import com.github.boformer.proto.ProtoPlugin;
+import com.github.boformer.proto.access.PlayerPlotAccess;
+import com.github.boformer.proto.config.PlotAbandonAction;
 import com.github.boformer.proto.config.WorldConfig;
 import com.github.boformer.proto.data.PlotID;
+import com.github.boformer.proto.event.PlotAbandonEvent;
+import com.github.boformer.proto.event.PlotAccessChangeEvent;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.LocalWorld;
+import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.data.ChunkStore;
+import com.sk89q.worldedit.data.DataException;
+import com.sk89q.worldedit.data.MissingWorldException;
 import com.sk89q.worldedit.masks.RegionMask;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.snapshots.Snapshot;
+import com.sk89q.worldedit.snapshots.SnapshotRestore;
 
+import dummy.sponge.PlayerCommandPreprocessEventDummy;
+import dummy.sponge.PlayerJoinEventDummy;
+import dummy.sponge.PlayerPortalEventDummy;
+import dummy.sponge.PlayerTeleportEventDummy;
 import dummy.sponge.SpongeDummy;
 import dummy.worldedit.WorldEditDummy;
 
@@ -35,7 +52,10 @@ public class WorldEditConnector
 	private final ProtoPlugin plugin;
 	private final Game game;
 	private final WorldEdit worldEdit;
-
+	
+	//TODO subscribe to events
+	//TODO update multimask instead of creating a new mask?
+	//TODO listen to bypass event when implemented
 
 	/**
 	 * <i>Internal constructor: Create a new WorldEdit connector.</i>
@@ -55,19 +75,114 @@ public class WorldEditConnector
 	 */
 	public void initialize() 
 	{
-		//TODO listen for events
-		//TODO create masks for all logged in players
+		//register for events
+		game.getEventManager().register(this);
+		
+		//create masks for all logged in players
+		for(Player player : game.getOnlinePlayers()) 
+		{
+			updateMask(player);
+		}
 	}
 	
-	//TODO add methods for snapshot restore
-	//TODO subscribe to events
-	//TODO update multimask instead of creating a new mask?
+	//TODO javadoc
+	@Subscribe
+	public void onPlotPermissionChange(PlotAccessChangeEvent event) 
+	{
+		List<Player> maskChangePlayers = new ArrayList<>();
+		
+		for(PlayerPlotAccess access : event.getAccessChangeMap().keySet()) 
+		{
+			if(!access.getPermission().equalsIgnoreCase("worldedit")) continue;
+			
+			Player player = game.getPlayer(access.getPlayerID()).orNull();
+			
+			//player not logged in
+			if(player == null) continue;
+			
+			//Doesn't affect the player's current world
+			if(!SpongeDummy.getPlayerWorld(player).getUniqueID().equals(access.getPlotID().getWorldID())) continue;
+			
+			maskChangePlayers.add(player);
+		}
+		
+		for(Player player : maskChangePlayers) 
+		{
+			updateMask(player);
+		}
+	}
 	
+	//TODO javadoc
+	@Subscribe
+	public void onPlotAbandon(PlotAbandonEvent event) 
+	{
+		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getPlotID().getWorldID());
+		
+		if(worldConfig.plotAbandonAction == PlotAbandonAction.WORLDEDIT_SNAPSHOT_RESTORE) 
+		{
+			restorePlotFromSnapshot(event.getPlotID());
+		}
+	}
+
+	
+	//TODO javadoc
+	@Subscribe
+	public void onPlayerJoin(PlayerJoinEventDummy event) 
+	{
+		//method checks if world is plot world, just call it
+		updateMask(event.getPlayer());
+	}
+	
+	//TODO javadoc
+	@Subscribe
+	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEventDummy event) 
+	{
+		//block the //gmask command, so players can't change the mask. Also the single-/ version ;)
+		
+		if(event.getCommand().toLowerCase().startsWith("/gmask") || event.getCommand().toLowerCase().startsWith("//gmask")) 
+		{
+			World world = SpongeDummy.getPlayerWorld(event.getPlayer());
+			WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world.getName());
+			
+			//TODO config value for worldedit behaviour
+			//TODO bypassing
+			if(worldConfig != null && worldConfig.plotsEnabled)
+			{
+				event.setCancelled(true);
+				
+				event.getPlayer().sendMessage("You can't use this command in plot worlds.");
+			}
+		}
+	}
+	
+	//TODO javadoc
+	@Subscribe
+	public void onPlayerTeleport(PlayerTeleportEventDummy event) 
+	{
+		World fromWorld = event.getFromWorld();
+		World toWorld = event.getToWorld();
+		
+		//no world change
+		if(fromWorld == toWorld) return;
+		
+		//method checks if world is plot world, just call it
+		updateMask(event.getPlayer());
+	}
+	
+	//TODO portal event included in teleport event? wait for sponge...
+	//TODO javadoc
+	@Subscribe
+	public void onPlayerPortal(PlayerPortalEventDummy event) 
+	{
+		onPlayerTeleport(event);
+	}
+	
+	//TODO add world argument?
 	/**
 	 * Replaces the global mask of a player with an updated version containing only the plots where the player has WorldEdit permission.
 	 * @param player The player
 	 */
-	public void createMask(Player player) 
+	public void updateMask(Player player) 
 	{
 		World world = SpongeDummy.getPlayerWorld(player);
 		
@@ -75,7 +190,7 @@ public class WorldEditConnector
 		
 		//TODO player bypassing?
 		
-		//TODO add a permission protection.useworldeditonlyinplots and protection.dontuseworldeditatall and check that first
+		//TODO add a permission proto.useworldeditonlyinplots and proto.dontuseworldeditatall and check that first
 		
 		if(worldConfig == null)
 		{
@@ -93,7 +208,8 @@ public class WorldEditConnector
 		} 
 		catch (Exception e) 
 		{
-			// TODO add error message
+			plugin.getLogger().error("[WorldEditConnector] Error while listing WorldEdit-enabled plots for player '" + player.getName() + "'. Using empty mask to prevent abuse.");
+			plugin.getLogger().error("Details: " + e.getMessage());
 			e.printStackTrace();
 			
 			//set empty mask to prevent abuse
@@ -121,8 +237,12 @@ public class WorldEditConnector
 		session.setMask(null);
 	}
 	
-	
-	public void restorePlot(PlotID plotID) 
+	/**
+	 * Regenerates the land of an abandoned plot using the WorldEdit snapshot feature.
+	 * 
+	 * @param plotID The plot ID
+	 */
+	public void restorePlotFromSnapshot(PlotID plotID) 
 	{
 		World world = game.getWorld(plotID.getWorldID());
 		
@@ -139,14 +259,83 @@ public class WorldEditConnector
 		LocalConfiguration worldEditConfig = worldEdit.getConfiguration();
 		EditSession session = new EditSession(localWorld, -1);
 		
-		Snapshot snapshot = null;
-		
 		if(worldEditConfig.snapshotRepo == null) 
 		{
-			plugin.getLogger().error("[WorldEditConnector] Snapshot/backup restore is not configured.");
+			plugin.getLogger().error("[WorldEditConnector] Can not regenerate abandoned plot: Snapshot/Backup restore is not configured in WorldEdit configuration.");
+			return;
 		}
 		
-		//TODO
+		Snapshot snapshot = null;
+		
+		try
+		{
+			snapshot = worldEditConfig.snapshotRepo.getDefaultSnapshot(worldName);
+		}
+		catch (MissingWorldException e) 
+		{}
+		
+		if(snapshot == null) 
+		{
+			//"No snapshot found. Can't restore plot!"
+			plugin.getLogger().error("[WorldEditConnector] Can not regenerate abandoned plot: No snapshot found.");
+			return;
+		}
+		
+		ChunkStore chunkStore = null;
+		
+		//Load chunk store
+		try
+		{
+			chunkStore = snapshot.getChunkStore();
+		}
+		catch (Exception e) 
+		{
+			plugin.getLogger().error("[WorldEditConnector] Failed to load snapshot: " + e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+		
+		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(worldName);
+		Region region = getRegionForPlot(plotID, world, worldConfig);
+
+		try 
+		{
+			SnapshotRestore restore = new SnapshotRestore(chunkStore, session, region);
+			
+			try
+			{
+				restore.restore();
+			}
+			catch (MaxChangedBlocksException e) {}
+            
+            if (restore.hadTotalFailure()) 
+            {
+                String error = restore.getLastErrorMessage();
+                if (error != null) 
+                {
+                	plugin.getLogger().error("[WorldEditConnector] Errors prevented any blocks from being restored.");
+                	plugin.getLogger().error("Last error: " +  error);
+                } 
+                else 
+                {
+                	plugin.getLogger().error("[WorldEditConnector] No chunks could be loaded. (Bad archive?)");
+                }
+            } 
+            else 
+            {
+            	plugin.getLogger().debug("[WorldEditConnector] Plot restored.");
+            }
+        } 
+        finally 
+        {
+            try 
+            {
+                chunkStore.close();
+            } 
+            catch(IOException e) {}
+        }
+		
+		//TODO unload world if loaded during process
 	}	
 	
 	private static CuboidRegion getRegionForPlot(PlotID plotID, World world, WorldConfig worldConfig)

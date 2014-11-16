@@ -24,5 +24,7 @@ public class WorldConfig
 	public String plotExpirationStartTime;
 	public String plotExpirationAction;
 	
+	public PlotAbandonAction plotAbandonAction;
+	
 	
 }

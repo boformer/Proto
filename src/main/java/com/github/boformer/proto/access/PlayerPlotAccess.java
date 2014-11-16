@@ -6,8 +6,6 @@ import com.github.boformer.proto.data.PlotID;
 
 /**
  * Represents a single permission of a player in a plot.
- * 
- * <p><i>Usually this class is only used internally.</i></p>
  */
 public class PlayerPlotAccess
 {
