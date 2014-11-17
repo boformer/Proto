@@ -23,8 +23,8 @@ public class PlotCheckManager
 	private final Game game;
 	
 	private List<PlotID> submittedPlots;
-	private List<PlotID> expiredReviewPlots;
-	private List<PlotID> expiredDeletionPlots;
+	private List<PlotID> expiredPlots;
+	private List<PlotID> deletionPlots;
 	
 	private final Random random;
 	
@@ -32,6 +32,7 @@ public class PlotCheckManager
 	//TODO Listen for plot state changes
 	
 	//TODO automatic deletion of expired plots: call automatic deletion method to delete plots when server is idling
+	//TODO add a plotstate "LOCKED_FOR_DELETION" while the plot is not regenerated
 	
 	//TODO configure which date is used for expiration: last player login, creation date, last mod date?
 	
@@ -71,8 +72,8 @@ public class PlotCheckManager
 		}
 		
 		//find expired plots in database
-		expiredReviewPlots = new ArrayList<>();
-		expiredDeletionPlots = new ArrayList<>();
+		expiredPlots = new ArrayList<>();
+		deletionPlots = new ArrayList<>();
 		
 		for(String worldName : plugin.getConfigManager().getWorldNames())
 		{
@@ -121,11 +122,13 @@ public class PlotCheckManager
 				//what happens when a plot is expired?
 				if(worldConfig.plotExpirationAction.equalsIgnoreCase("STAFF_REVIEW")) 
 				{
-					expiredReviewPlots.addAll(plotList);
+					expiredPlots.addAll(plotList);
 				}
 				else if(worldConfig.plotExpirationAction.equalsIgnoreCase("AUTO_DELETE")) 
 				{
-					expiredDeletionPlots.addAll(plotList);
+					//TODO remove player access, change state to LOCKED_FOR_DELETION
+					
+					deletionPlots.addAll(plotList);
 				}
 				else 
 				{
@@ -156,9 +159,9 @@ public class PlotCheckManager
 	 * 
 	 * @return A list of plot IDs
 	 */
-	public List<PlotID> getExpiredDeletionPlots()
+	public List<PlotID> getDeletionPlots()
 	{
-		return expiredDeletionPlots;
+		return deletionPlots;
 	}
 	
 	/**
@@ -166,9 +169,9 @@ public class PlotCheckManager
 	 * 
 	 * @return A list of plot IDs
 	 */
-	public List<PlotID> getExpiredReviewPlots()
+	public List<PlotID> getExpiredPlots()
 	{
-		return expiredReviewPlots;
+		return expiredPlots;
 	}
 	
 	/**
@@ -182,9 +185,9 @@ public class PlotCheckManager
 		{
 			return submittedPlots.get(random.nextInt(submittedPlots.size()));
 		}
-		else if (expiredReviewPlots.size() > 0)
+		else if (expiredPlots.size() > 0)
 		{
-			return expiredReviewPlots.get(random.nextInt(expiredReviewPlots.size()));
+			return expiredPlots.get(random.nextInt(expiredPlots.size()));
 		}
 		else return null;
 	}

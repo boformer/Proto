@@ -15,7 +15,7 @@ public class PlotState
 	public final static int PUBLIC = 0;
 	
 	/**
-	 * The state of a plot when a player claimed it. Plots with this state will be listed in {@link PlotCheckManager#getExpiredReviewPlots()} or {@link PlotCheckManager#getExpiredDeletionPlots()} if they are older than a configured amount of days.
+	 * The state of a plot when a player claimed it. Plots with this state will be listed in {@link PlotCheckManager#getExpiredPlots()} or {@link PlotCheckManager#getDeletionPlots()} if they are older than a configured amount of days.
 	 */
 	public final static int CLAIMED = 1;
 	
@@ -28,4 +28,9 @@ public class PlotState
 	 * The state of a staff-reviewed plot. A plot that is marked as finished will never expire.
 	 */
 	public final static int FINISHED = 3;
+	
+	/**
+	 * The state of a deleted plot that has to be regenerated/restored first before it is released to the public. All building actions blocked.
+	 */
+	public final static int LOCKED_FOR_DELETION = 4;
 }
