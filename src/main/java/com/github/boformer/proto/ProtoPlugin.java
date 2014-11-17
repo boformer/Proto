@@ -1,6 +1,6 @@
 package com.github.boformer.proto;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;

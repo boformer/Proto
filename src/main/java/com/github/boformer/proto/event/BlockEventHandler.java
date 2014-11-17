@@ -3,6 +3,7 @@ package com.github.boformer.proto.event;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.event.Subscribe;
 
 import com.github.boformer.proto.ProtoPlugin;
@@ -90,7 +91,7 @@ public class BlockEventHandler
 						event.getPlayer().sendMessage("You do not have the permission to build here! Ask one of the plot's managers:");
 						//TODO singular: The plot manager
 						//TODO apache commons lang
-						event.getPlayer().sendMessage(StringUtils.join(managers, ', '));
+						event.getPlayer().sendMessage(StringUtils.join(managers, ','));
 						
 						
 						
