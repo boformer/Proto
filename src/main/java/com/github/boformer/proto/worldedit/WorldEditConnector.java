@@ -165,7 +165,7 @@ public class WorldEditConnector
 		if(fromWorld == toWorld) return;
 		
 		//method checks if world is plot world, just call it
-		updateMask(event.getPlayer());
+		updateMask(event.getPlayer(), toWorld);
 	}
 	
 	//TODO portal event included in teleport event? wait for sponge...
@@ -176,15 +176,24 @@ public class WorldEditConnector
 		onPlayerTeleport(event);
 	}
 	
-	//TODO add world argument?
 	/**
-	 * Replaces the global mask of a player with an updated version containing only the plots where the player has WorldEdit permission.
+	 * Replaces the global mask of a player with an updated version containing only the plots where the player has WorldEdit permission. Uses the world the player is in at the moment.
 	 * @param player The player
 	 */
 	public void updateMask(Player player) 
 	{
 		World world = SpongeDummy.getPlayerWorld(player);
 		
+		updateMask(player, world);
+	}
+	
+	/**
+	 * Replaces the global mask of a player with an updated version containing only the plots where the player has WorldEdit permission.
+	 * @param player The player
+	 * @param world The world the player is in or enters
+	 */
+	public void updateMask(Player player, World world) 
+	{
 		if(SpongeDummy.hasWorldPermission(player, world, "proto.plot.worldedit.bypass")) 
 		{
 			//worldedit not restricted
