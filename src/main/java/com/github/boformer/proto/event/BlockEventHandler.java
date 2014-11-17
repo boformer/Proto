@@ -89,7 +89,7 @@ public class BlockEventHandler
 						event.getPlayer().sendMessage("You do not have the permission to build here! Ask one of the plot's managers:");
 						//TODO singular: The plot manager
 						//TODO apache commons lang
-						event.getPlayer().sendMessage(StringUtils.join(managers, ','));
+						event.getPlayer().sendMessage(StringUtils.join(managers, ", "));
 						
 						
 						
