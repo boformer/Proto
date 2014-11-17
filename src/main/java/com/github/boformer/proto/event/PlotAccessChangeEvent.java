@@ -1,7 +1,6 @@
 package com.github.boformer.proto.event;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import com.github.boformer.proto.access.PlayerPlotAccess;

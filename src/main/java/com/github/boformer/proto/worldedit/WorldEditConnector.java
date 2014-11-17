@@ -24,7 +24,6 @@ import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.data.ChunkStore;
-import com.sk89q.worldedit.data.DataException;
 import com.sk89q.worldedit.data.MissingWorldException;
 import com.sk89q.worldedit.masks.RegionMask;
 import com.sk89q.worldedit.regions.CuboidRegion;
