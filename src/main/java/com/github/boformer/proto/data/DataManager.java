@@ -497,7 +497,7 @@ public class DataManager
 	}
 	
 	//TODO javadoc
-	public List<String> getPlayerNamesByPermission(PlotID plotID, String ... permissions) throws Exception
+	public List<String> getPlayerNamesByPermission(PlotID plotID, String permission) throws Exception
 	{
 		PreparedStatement statement = null;
 
@@ -513,26 +513,16 @@ public class DataManager
 					+ "AND plot.x = ? " //1
 					+ "AND plot.z = ? " //2
 					+ "AND world.uuid = ? " //3
-					+ "AND access.permission IN ("; //4...5...
+					+ "AND access.permission = ? "; //4
 					
-			for(int i = 0; i < permissions.length; i++) 
-			{
-				if(i > 0) query += ","; //TODO use StringBuilder
-				
-				query += " ?";
-			}
-			query += ")";
-			
+
 			statement = databaseConnection.prepareStatement(query);
 			
 			statement.setInt(1, plotID.getX());
 			statement.setInt(2, plotID.getZ());
 			statement.setString(3, plotID.getWorldID().toString());
-			
-			for(int i = 0; i < permissions.length; i++) 
-			{
-				statement.setString(4 + i, permissions[i]);
-			}
+			statement.setString(4, permission);
+
 			
 			ResultSet resultSet = statement.executeQuery();
 			
@@ -547,7 +537,54 @@ public class DataManager
 		}
 		catch(Exception e)
 		{
-			plugin.getLogger().error("Unable to load plot data: " + e.getMessage());
+			plugin.getLogger().error("Unable to load player list: " + e.getMessage());
+			e.printStackTrace();
+			
+			throw e;
+		}
+		finally
+		{
+			statement.close();
+		}
+	}
+	
+	//TODO javadoc
+	public List<String> getPlayerNamesByPermission(UUID worldID, String permission) throws Exception
+	{
+		PreparedStatement statement = null;
+
+		try
+		{
+			refreshDatabaseConnection();
+			
+			String query = "SELECT DISTINCT player.name"
+					+ "FROM " + databaseTablePrefix + "player_world_access access, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "worlds world "
+					+ "WHERE world.id = access.world_id "
+					+ "AND player.id = access.player_id "
+					+ "AND world.uuid = ? " //1
+					+ "AND access.permission = ? "; //2
+					
+
+			statement = databaseConnection.prepareStatement(query);
+			
+			statement.setString(1, worldID.toString());
+			statement.setString(2, permission);
+
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			List<String> playerNameList = new ArrayList<>();
+			
+			while(resultSet.next()) 
+			{
+				playerNameList.add(resultSet.getString("player.name"));
+			}
+			
+			return playerNameList;
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().error("Unable to load player list: " + e.getMessage());
 			e.printStackTrace();
 			
 			throw e;
