@@ -29,12 +29,11 @@ public class PlotCheckManager
 	private final Random random;
 	
 	//TODO call updatePlotLists every x hours and notify staff members
-	//TODO Listen for plot state changes
+	//TODO or listen for plot state changes
 	
 	//TODO automatic deletion of expired plots: call automatic deletion method to delete plots when server is idling
-	//TODO add a plotstate "LOCKED_FOR_DELETION" while the plot is not regenerated
+	//TODO use plotstate "LOCKED_FOR_DELETION" while the plot is not regenerated
 	
-	//TODO configure which date is used for expiration: last player login, creation date, last mod date?
 	
 	/**
 	 * <i>Internal constructor: Constructs a new PlotCheck manager.</i>
