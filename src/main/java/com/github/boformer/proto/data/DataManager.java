@@ -49,6 +49,7 @@ public class DataManager
 	}
 	
 	//TODO don't print stack trace/warning message when exception is passed up
+	//TODO don't prepare statement every time
 
 	/** 
 	 * <i>Internal method: Initializes the data manager when the server starts up. Creates the database tables on first startup.</i>
@@ -494,6 +495,71 @@ public class DataManager
 			throw e;
 		}
 	}
+	
+	//TODO javadoc
+	public List<String> getPlayerNamesByPermission(PlotID plotID, String ... permissions) throws Exception
+	{
+		PreparedStatement statement = null;
+
+		try
+		{
+			refreshDatabaseConnection();
+			
+			String query = "SELECT DISTINCT player.name"
+					+ "FROM " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "worlds world "
+					+ "WHERE plot.world_id = world.id "
+					+ "AND plot.id = access.plot_id "
+					+ "AND player.id = access.player_id "
+					+ "AND plot.x = ? " //1
+					+ "AND plot.z = ? " //2
+					+ "AND world.uuid = ? " //3
+					+ "AND access.permission IN ("; //4...5...
+					
+			for(int i = 0; i < permissions.length; i++) 
+			{
+				if(i > 0) query += ","; //TODO use StringBuilder
+				
+				query += " ?";
+			}
+			query += ")";
+			
+			statement = databaseConnection.prepareStatement(query);
+			
+			statement.setInt(1, plotID.getX());
+			statement.setInt(2, plotID.getZ());
+			statement.setString(3, plotID.getWorldID().toString());
+			
+			for(int i = 0; i < permissions.length; i++) 
+			{
+				statement.setString(4 + i, permissions[i]);
+			}
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			List<String> playerNameList = new ArrayList<>();
+			
+			while(resultSet.next()) 
+			{
+				playerNameList.add(resultSet.getString("player.name"));
+			}
+			
+			return playerNameList;
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().error("Unable to load plot data: " + e.getMessage());
+			e.printStackTrace();
+			
+			throw e;
+		}
+		finally
+		{
+			statement.close();
+		}
+	}
+		
+		
+	
 
 	//method for plotcheck
 	/**
@@ -514,7 +580,7 @@ public class DataManager
 			refreshDatabaseConnection();
 			
 			statement = databaseConnection.prepareStatement(
-					  "SELECT plot.x, plot.z "
+					  "SELECT DISTINCT plot.x, plot.z "
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
 					+ "WHERE plot.world_id = world.id "
 					+ "AND plot.state = ? " //1
@@ -574,7 +640,7 @@ public class DataManager
 			refreshDatabaseConnection();
 			
 			statement = databaseConnection.prepareStatement(
-					  "SELECT plot.x, plot.z "
+					  "SELECT DISTINCT plot.x, plot.z "
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world, " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player "
 					+ "WHERE plot.world_id = world.id "
 					+ "AND plot.state = ? " //1
@@ -635,7 +701,7 @@ public class DataManager
 			refreshDatabaseConnection();
 			
 			statement = databaseConnection.prepareStatement(
-					  "SELECT plot.x, plot.z "
+					  "SELECT DISTINCT plot.x, plot.z "
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
 					+ "WHERE plot.world_id = world.id "
 					+ "AND plot.state = ? " //1
@@ -691,7 +757,7 @@ public class DataManager
 			refreshDatabaseConnection();
 			
 			statement = databaseConnection.prepareStatement(
-					  "SELECT world.uuid, plot.x, plot.z "
+					  "SELECT DISTINCT world.uuid, plot.x, plot.z "
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
 					+ "WHERE plot.world_id = world.id "
 					+ "AND plot.state = ?"); //1
@@ -747,7 +813,7 @@ public class DataManager
 			refreshDatabaseConnection();
 			
 			statement = databaseConnection.prepareStatement(
-					  "SELECT plot.x, plot.z "
+					  "SELECT DISTINCT plot.x, plot.z "
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world, " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player "
 					+ "WHERE plot.world_id = world.id "
 					+ "AND plot.id = access.plot_id "

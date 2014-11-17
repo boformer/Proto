@@ -186,43 +186,53 @@ public class WorldEditConnector
 	{
 		World world = SpongeDummy.getPlayerWorld(player);
 		
+		if(SpongeDummy.hasWorldPermission(player, world, "proto.plot.worldedit.bypass")) 
+		{
+			//worldedit not restricted
+			return;
+		}
+		
 		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world.getName());
-		
-		//TODO player bypassing?
-		
-		//TODO add a permission proto.useworldeditonlyinplots and proto.dontuseworldeditatall and check that first
-		//https://github.com/boformer/Proto/wiki/Permissions
 		
 		if(worldConfig == null)
 		{
 			//no configuration --> not our deal. remove mask
 			clearMask(player);
+			return;
 		}
 		
 		MultiMask mask = new MultiMask();
 		LocalSession session = worldEdit.getSession(WorldEditDummy.getLocalPlayer(player));
 		
-		List<PlotID> worldEditPlots;
-		try 
+		if(SpongeDummy.hasWorldPermission(player, world, "proto.plot.worldedit.plotsonly")) 
 		{
-			worldEditPlots = plugin.getDataManager().getPlotsByPermission(SpongeDummy.getPlayerUniqueId(player), world.getUniqueID(), "worldedit");
-		} 
-		catch (Exception e) 
-		{
-			plugin.getLogger().error("[WorldEditConnector] Error while listing WorldEdit-enabled plots for player '" + player.getName() + "'. Using empty mask to prevent abuse.");
-			plugin.getLogger().error("Details: " + e.getMessage());
-			e.printStackTrace();
+			List<PlotID> worldEditPlots;
+			try 
+			{
+				worldEditPlots = plugin.getDataManager().getPlotsByPermission(SpongeDummy.getPlayerUniqueId(player), world.getUniqueID(), "worldedit");
+			} 
+			catch (Exception e) 
+			{
+				plugin.getLogger().error("[WorldEditConnector] Error while listing WorldEdit-enabled plots for player '" + player.getName() + "'. Using empty mask to prevent abuse.");
+				plugin.getLogger().error("Details: " + e.getMessage());
+				e.printStackTrace();
+				
+				//set empty mask to prevent abuse
+				session.setMask(mask);
+				return;
+			}
 			
-			//set empty mask to prevent abuse
-			session.setMask(mask);
-			return;
+			for(PlotID plotID : worldEditPlots)  
+			{
+				Region region = getRegionForPlot(plotID, world, worldConfig);
+				
+				mask.add(new RegionMask(region));
+			}
 		}
-		
-		for(PlotID plotID : worldEditPlots)  
+		else
 		{
-			Region region = getRegionForPlot(plotID, world, worldConfig);
-			
-			mask.add(new RegionMask(region));
+			//Permission: proto.plot.worldedit.disable
+			//Just leave the mask empty
 		}
 		
 		session.setMask(mask);

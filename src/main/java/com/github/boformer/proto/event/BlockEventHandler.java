@@ -1,5 +1,8 @@
 package com.github.boformer.proto.event;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.spongepowered.api.event.Subscribe;
 
 import com.github.boformer.proto.ProtoPlugin;
@@ -64,8 +67,10 @@ public class BlockEventHandler
 				{
 					//plot is not public -> now check permissions
 					
+					//TODO add proto.plot.build.*
+					
 					//1. server
-					if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "donut.protection.build.plot." + plotID.getX() + "." + plotID.getZ())) 
+					if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "proto.plot.build." + plotID.getX() + "." + plotID.getZ())) 
 					{
 						//player has permission in plot
 						return;
@@ -79,8 +84,16 @@ public class BlockEventHandler
 					}
 					else
 					{
+						List<String> managers = plugin.getDataManager().getPlayerNamesByPermission(plotID, "manage");
+						
 						//player has no permission
-						event.getPlayer().sendMessage("You do not have the permission to build in this plot!");
+						event.getPlayer().sendMessage("You do not have the permission to build here! Ask one of the plot's managers:");
+						//TODO singular: The plot manager
+						//TODO apache commons lang
+						event.getPlayer().sendMessage(StringUtils.join(managers, ', '));
+						
+						
+						
 						event.setCancelled(true);
 						return;
 						
@@ -95,7 +108,7 @@ public class BlockEventHandler
 			//permission sources: 1. server, 2. plugin 
 			
 			//1. server
-			if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "donut.protection.build")) 
+			if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "proto.world.build")) 
 			{
 				//player has permission in world
 				return;
@@ -114,13 +127,20 @@ public class BlockEventHandler
 				
 				if(worldConfig.plotsEnabled) 
 				{
-					event.getPlayer().sendMessage("You do not have the permission to build in this plot!");
-					//TODO display info how to claim if player has 'claim' permission
+					if(SpongeDummy.hasWorldPermission(event.getPlayer(), SpongeDummy.getPlayerWorld(event.getPlayer()), "proto.plot.claim")) 
+					{
+						event.getPlayer().sendMessage("In this world, you can not build in public plots!");
+						event.getPlayer().sendMessage("Use /plot claim to claim this plot."); //TODO add price
+					}
+					else
+					{
+						event.getPlayer().sendMessage("You do not have the permission to build in this plot!");
+					}
 				}
 				else
 				{
 					event.getPlayer().sendMessage("You do not have the permission to build in this world!");
-					//TODO display info how to get permission (list managers/owners of the world)
+					event.getPlayer().sendMessage("Ask a Staff member to get permission."); //TODO add list of managers/owners of this world
 				}
 				
 				event.setCancelled(true);
