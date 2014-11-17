@@ -83,20 +83,28 @@ public class BlockEventHandler
 					}
 					else
 					{
+						//TODO limit list items to config.maxListSize?
 						List<String> managers = plugin.getDataManager().getPlayerNamesByPermission(plotID, "manage");
 						
 						//player has no permission
-						event.getPlayer().sendMessage("You do not have the permission to build here! Ask one of the plot's managers:");
-						//TODO singular: The plot manager
-						//TODO apache commons lang
-						event.getPlayer().sendMessage(StringUtils.join(managers, ", "));
-						
-						
+						if(managers.size() == 0) 
+						{
+							event.getPlayer().sendMessage("You do not have the permission to build in this plot!");
+						}
+						else if(managers.size() == 1) 
+						{
+							event.getPlayer().sendMessage("You do not have the permission to build here!");
+							event.getPlayer().sendMessage(String.format("Ask the plot's manager (%s) for build rights.", managers.get(0)));
+						}
+						else
+						{
+							event.getPlayer().sendMessage("You do not have the permission to build here!");							
+							event.getPlayer().sendMessage("Ask one of the plot's managers for build rights:");
+							event.getPlayer().sendMessage(StringUtils.join(managers, ", "));
+						}
 						
 						event.setCancelled(true);
 						return;
-						
-						//TODO display plot owner info!
 					}
 				}
 			
@@ -138,8 +146,24 @@ public class BlockEventHandler
 				}
 				else
 				{
-					event.getPlayer().sendMessage("You do not have the permission to build in this world!");
-					event.getPlayer().sendMessage("Ask a Staff member to get permission."); //TODO add list of managers/owners of this world
+					//TODO limit list items to config.maxListSize?
+					List<String> managers = plugin.getDataManager().getPlayerNamesByPermission(event.getWorld().getUniqueID(), "manage");
+					
+					if(managers.size() == 0) 
+					{
+						event.getPlayer().sendMessage("You do not have the permission to build in this world!");
+					}
+					else if(managers.size() == 1) 
+					{
+						event.getPlayer().sendMessage("You do not have the permission to build here!");
+						event.getPlayer().sendMessage(String.format("Ask the world's manager (%s) for build rights.", managers.get(0)));
+					}
+					else
+					{
+						event.getPlayer().sendMessage("You do not have the permission to build here!");							
+						event.getPlayer().sendMessage("Ask one of the world's managers for build rights:");
+						event.getPlayer().sendMessage(StringUtils.join(managers, ", "));
+					}
 				}
 				
 				event.setCancelled(true);
