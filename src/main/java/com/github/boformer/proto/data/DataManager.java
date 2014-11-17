@@ -287,7 +287,7 @@ public class DataManager
 				PlotData plotData = new PlotData(plotID);
 				
 				plotData.setName(resultSet.getString("plot.name"));
-				plotData.setState(resultSet.getInt("plot.state"));
+				plotData.setState(PlotState.byId(resultSet.getInt("plot.state")));
 				plotData.setCreationDate(resultSet.getTimestamp("plot.creation_date"));
 				plotData.setLastModificationDate(resultSet.getTimestamp("plot.last_mod_date"));
 				
@@ -608,7 +608,7 @@ public class DataManager
 	 * @return A list of plot IDs
 	 * @throws Exception Database Exception
 	 */
-	public List<PlotID> getPlotsByLatestCreationDate(int state, Date latestCreationDate, UUID worldID) throws Exception
+	public List<PlotID> getPlotsByLatestCreationDate(PlotState state, Date latestCreationDate, UUID worldID) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -625,7 +625,7 @@ public class DataManager
 					+ "AND world.uuid = ?"); //3
 
 			
-			statement.setInt(1, state);
+			statement.setInt(1, state.getId());
 			statement.setTimestamp(2, new Timestamp(latestCreationDate.getTime()));
 			statement.setString(3, worldID.toString());
 			
@@ -668,7 +668,7 @@ public class DataManager
 	 * @return A list of plot IDs
 	 * @throws Exception Database Exception
 	 */
-	public List<PlotID> getPlotsByLatestPlayerLoginDate(int state, Date latestPlayerLoginDate, String permission, UUID worldID) throws Exception
+	public List<PlotID> getPlotsByLatestPlayerLoginDate(PlotState state, Date latestPlayerLoginDate, String permission, UUID worldID) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -687,7 +687,7 @@ public class DataManager
 					+ "AND access.permission = ? " //3
 					+ "AND world.uuid = ?"); //4
 			
-			statement.setInt(1, state);
+			statement.setInt(1, state.getId());
 			statement.setTimestamp(2, new Timestamp(latestPlayerLoginDate.getTime()));
 			statement.setString(3, permission);
 			statement.setString(4, worldID.toString());
@@ -729,7 +729,7 @@ public class DataManager
 	 * @return A list of plot IDs
 	 * @throws Exception Database Exception
 	 */
-	public List<PlotID> getPlotsByLatestModificationDate(int state, Date latestModificationDate, UUID worldID) throws Exception
+	public List<PlotID> getPlotsByLatestModificationDate(PlotState state, Date latestModificationDate, UUID worldID) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -746,7 +746,7 @@ public class DataManager
 					+ "AND world.uuid = ?"); //3
 
 			
-			statement.setInt(1, state);
+			statement.setInt(1, state.getId());
 			statement.setTimestamp(2, new Timestamp(latestModificationDate.getTime()));
 			statement.setString(3, worldID.toString());
 			
@@ -785,7 +785,7 @@ public class DataManager
 	 * @return A list of plot IDs
 	 * @throws Exception Database Exception
 	 */
-	public List<PlotID> getPlotsByState(int state) throws Exception
+	public List<PlotID> getPlotsByState(PlotState state) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -801,7 +801,7 @@ public class DataManager
 
 
 			
-			statement.setInt(1, state);
+			statement.setInt(1, state.getId());
 			
 			ResultSet resultSet = statement.executeQuery();
 			

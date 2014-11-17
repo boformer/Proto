@@ -10,7 +10,7 @@ public class PlotData
 	private final PlotID plotID;
 
 	private String name;
-	private int state;
+	private PlotState state;
 
 	private Date creationDate;
 	private Date lastModificationDate;
@@ -21,7 +21,7 @@ public class PlotData
 	 * 
 	 * @return The plot state
 	 */
-	public int getState()
+	public PlotState getState()
 	{
 		return state;
 	}
@@ -31,7 +31,7 @@ public class PlotData
 	 * 
 	 * @param state The plot state
 	 */
-	public void setState(int state)
+	public void setState(PlotState state)
 	{
 		this.state = state;
 	}
