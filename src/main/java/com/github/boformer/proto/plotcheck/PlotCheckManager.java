@@ -97,19 +97,19 @@ public class PlotCheckManager
 				//when does a plot expire?
 				if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("CREATION")) 
 				{
-					plotList = plugin.getDataManager().getPlotsByLatestCreationDate(PlotState.CLAIMED, calendar.getTime(), world.getUniqueID());
+					plotList = plugin.getDataManager().getPlotsByLatestCreationDate(PlotState.CLAIMED, calendar.getTime(), world.getName());
 				}
 				else if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("LAST_MODIFICATION")) 
 				{
-					plotList = plugin.getDataManager().getPlotsByLatestModificationDate(PlotState.CLAIMED, calendar.getTime(), world.getUniqueID());
+					plotList = plugin.getDataManager().getPlotsByLatestModificationDate(PlotState.CLAIMED, calendar.getTime(), world.getName());
 				}
 				else if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("LAST_OWNER_LOGIN")) 
 				{
-					plotList = plugin.getDataManager().getPlotsByLatestPlayerLoginDate(PlotState.CLAIMED, calendar.getTime(), "owner", world.getUniqueID());
+					plotList = plugin.getDataManager().getPlotsByLatestPlayerLoginDate(PlotState.CLAIMED, calendar.getTime(), "owner", world.getName());
 				}
 				else if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("LAST_MANAGER_LOGIN")) 
 				{
-					plotList = plugin.getDataManager().getPlotsByLatestPlayerLoginDate(PlotState.CLAIMED, calendar.getTime(), "manager", world.getUniqueID());
+					plotList = plugin.getDataManager().getPlotsByLatestPlayerLoginDate(PlotState.CLAIMED, calendar.getTime(), "manager", world.getName());
 				}
 				else
 				{

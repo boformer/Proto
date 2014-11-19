@@ -100,7 +100,7 @@ public class WorldEditConnector
 			if(player == null) continue;
 			
 			//Doesn't affect the player's current world
-			if(!SpongeDummy.getPlayerWorld(player).getUniqueID().equals(access.getPlotID().getWorldID())) continue;
+			if(!SpongeDummy.getPlayerWorld(player).getName().equals(access.getPlotID().getWorldName())) continue;
 			
 			maskChangePlayers.add(player);
 		}
@@ -115,7 +115,7 @@ public class WorldEditConnector
 	@Subscribe
 	public void onPlotAbandon(PlotAbandonEvent event) 
 	{
-		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getPlotID().getWorldID());
+		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getPlotID().getWorldName());
 		
 		if(worldConfig.plotAbandonAction == PlotAbandonAction.WORLDEDIT_SNAPSHOT_RESTORE) 
 		{
@@ -217,7 +217,7 @@ public class WorldEditConnector
 			List<PlotID> worldEditPlots;
 			try 
 			{
-				worldEditPlots = plugin.getDataManager().getPlotsByPermission(SpongeDummy.getPlayerUniqueId(player), world.getUniqueID(), "worldedit");
+				worldEditPlots = plugin.getDataManager().getPlotsByPermission(SpongeDummy.getPlayerUniqueId(player), world.getName(), "worldedit");
 			} 
 			catch (Exception e) 
 			{
@@ -263,14 +263,13 @@ public class WorldEditConnector
 	 */
 	public void restorePlotFromSnapshot(PlotID plotID) 
 	{
-		World world = game.getWorld(plotID.getWorldID());
+		World world = game.getWorld(plotID.getWorldName());
 		
 		//TODO load world?
 		//TODO Important: put plot on a list of plots that have to be restored
 		if(world == null) return;
 		
-		//TODO get LocalWorld from plotID.worldID
-		LocalWorld localWorld = WorldEditDummy.getLocalWorld(world); // later change to 'SpongeUtil'?
+		LocalWorld localWorld = WorldEditDummy.getLocalWorld(world); //TODO later change to 'SpongeUtil'?
 		
 		//TODO use worldData instead (for unloaded worlds)
 		String worldName = world.getName();
@@ -359,7 +358,6 @@ public class WorldEditConnector
 	
 	private static CuboidRegion getRegionForPlot(PlotID plotID, World world, WorldConfig worldConfig)
 	{
-		//TODO get LocalWorld from plotID.worldID
 		LocalWorld localWorld = WorldEditDummy.getLocalWorld(world); // later change to 'SpongeUtil'?
 		
 		int lesserBoundaryX = plotID.getX() * worldConfig.plotSizeX + worldConfig.plotOriginX;

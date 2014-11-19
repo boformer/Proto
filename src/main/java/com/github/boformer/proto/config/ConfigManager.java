@@ -68,37 +68,6 @@ public class ConfigManager
 		return null;
 	}
 	
-
-	/**
-	 * Gets the configuration for a world.
-	 * 
-	 * <p>Returns <code>null</code> if there is no configuration for a world.</p>
-	 * 
-	 * <p>The plugin ignores worlds without a configuration.</p>
-	 * 
-	 * @param worldID The world UUID
-	 * @return The world configuration
-	 */
-	public WorldConfig getWorldConfig(UUID worldID) 
-	{
-		WorldData worldData;
-		try
-		{
-			worldData = plugin.getDataManager().getWorldData(worldID);
-		}
-		catch (Exception e)
-		{
-			// TODO error message
-			e.printStackTrace();
-			
-			return null; //TODO on exception return special safe world-cfg (block...)
-		}
-		
-		if(worldData == null) return null;
-		
-		return getWorldConfig(worldData.getName());
-	}
-	
 	/**
 	 * Gets the list of all worlds with an existing configuration
 	 * @return The list of world names

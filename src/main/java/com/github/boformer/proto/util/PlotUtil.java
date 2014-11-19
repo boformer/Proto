@@ -22,7 +22,7 @@ public class PlotUtil
 	 * @param worldConfig The configuration that defines the plot grid. Can be obtained using {@link ConfigManager#getWorldConfig(String)}.
 	 * @return The calculated plot ID
 	 */
-	public static final PlotID calculatePlotID(Vector3d position, World world, WorldConfig worldConfig)
+	public static final PlotID calculatePlotID(Vector3d position, String worldName, WorldConfig worldConfig)
 	{
 		double oX = position.getX() - worldConfig.plotOriginX;
 		double oZ = position.getZ() - worldConfig.plotOriginZ;
@@ -30,6 +30,6 @@ public class PlotUtil
 		int plotX = (int) Math.floor(oX / worldConfig.plotSizeX);
 		int plotZ = (int) Math.floor(oZ / worldConfig.plotSizeZ);
 		
-		return new PlotID(plotX, plotZ, world.getUniqueID());
+		return new PlotID(plotX, plotZ, worldName);
 	}
 }

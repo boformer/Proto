@@ -8,7 +8,7 @@ import java.util.UUID;
 public class PlayerWorldAccess
 {
 	private final UUID playerID;
-	private final UUID worldID;
+	private final String worldName;
 	private final String permission;
 
 
@@ -23,13 +23,13 @@ public class PlayerWorldAccess
 	}
 
 	/**
-	 * Gets the unique identifier of the world.
+	 * Gets the name of the world.
 	 * 
-	 * @return The world UUID
+	 * @return The world name
 	 */
-	public UUID getWorldID()
+	public String getWorldName() 
 	{
-		return worldID;
+		return worldName;
 	}
 
 	/**
@@ -46,13 +46,13 @@ public class PlayerWorldAccess
 	 * Creates a new permission node.
 	 * 
 	 * @param playerID The player UUID
-	 * @param worldID The world UUID
+	 * @param worldName The world name
 	 * @param permission The permission
 	 */
-	public PlayerWorldAccess(UUID playerID, UUID worldID, String permission)
+	public PlayerWorldAccess(UUID playerID, String worldName, String permission)
 	{
 		this.playerID = playerID;
-		this.worldID = worldID;
+		this.worldName = worldName;
 		this.permission = permission;
 	}
 
@@ -63,7 +63,7 @@ public class PlayerWorldAccess
 		int result = 1;
 		result = prime * result + ((permission == null) ? 0 : permission.hashCode());
 		result = prime * result + ((playerID == null) ? 0 : playerID.hashCode());
-		result = prime * result + ((worldID == null) ? 0 : worldID.hashCode());
+		result = prime * result + ((worldName == null) ? 0 : worldName.hashCode());
 		return result;
 	}
 
@@ -84,11 +84,11 @@ public class PlayerWorldAccess
 			if (other.playerID != null) return false;
 		}
 		else if (!playerID.equals(other.playerID)) return false;
-		if (worldID == null)
+		if (worldName == null)
 		{
-			if (other.worldID != null) return false;
+			if (other.worldName != null) return false;
 		}
-		else if (!worldID.equals(other.worldID)) return false;
+		else if (!worldName.equals(other.worldName)) return false;
 		return true;
 	}
 

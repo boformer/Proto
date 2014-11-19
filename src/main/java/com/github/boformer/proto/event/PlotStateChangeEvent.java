@@ -5,17 +5,18 @@ import java.util.Map;
 
 import com.github.boformer.proto.access.PlayerPlotAccess;
 import com.github.boformer.proto.data.PlotID;
+import com.github.boformer.proto.data.PlotState;
 
 //TODO javadoc
 
 public class PlotStateChangeEvent extends Event
 {
 	private final PlotID plotID;
-	private final int oldState;
-	private final int newState;
+	private final PlotState oldState;
+	private final PlotState newState;
 
 
-	public PlotStateChangeEvent(PlotID plotID, int oldState, int newState)
+	public PlotStateChangeEvent(PlotID plotID, PlotState oldState, PlotState newState)
 	{
 		this.plotID = plotID;
 		this.oldState = oldState;
@@ -27,12 +28,12 @@ public class PlotStateChangeEvent extends Event
 		return plotID;
 	}
 
-	public int getOldState()
+	public PlotState getOldState()
 	{
 		return oldState;
 	}
 
-	public int getNewState()
+	public PlotState getNewState()
 	{
 		return newState;
 	}

@@ -59,7 +59,7 @@ public class BlockEventHandler
 			{
 				// plots enabled -> check plot permissions
 				
-				PlotID plotID = PlotUtil.calculatePlotID(event.getLocation().getPosition(), event.getWorld(), worldConfig);
+				PlotID plotID = PlotUtil.calculatePlotID(event.getLocation().getPosition(), event.getWorld().getName(), worldConfig);
 				PlotData plotData = plugin.getDataManager().getPlotData(plotID);
 			
 				if(plotData.getState() != PlotState.PUBLIC) 
@@ -122,7 +122,7 @@ public class BlockEventHandler
 			}
 			
 			//2. plugin
-			else if(plugin.getDataManager().hasWorldAccess(SpongeDummy.getPlayerUniqueId(event.getPlayer()), event.getWorld().getUniqueID(), "build")) 
+			else if(plugin.getDataManager().hasWorldAccess(SpongeDummy.getPlayerUniqueId(event.getPlayer()), event.getWorld().getName(), "build")) 
 			{
 				//player has permission in world
 				return;
@@ -147,7 +147,7 @@ public class BlockEventHandler
 				else
 				{
 					//TODO limit list items to config.maxListSize?
-					List<String> managers = plugin.getDataManager().getPlayerNamesByPermission(event.getWorld().getUniqueID(), "manage");
+					List<String> managers = plugin.getDataManager().getPlayerNamesByPermission(event.getWorld().getName(), "manage");
 					
 					if(managers.size() == 0) 
 					{

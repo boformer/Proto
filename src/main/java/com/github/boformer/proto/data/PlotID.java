@@ -1,14 +1,12 @@
 package com.github.boformer.proto.data;
 
-import java.util.UUID;
-
 /**
  * A plot identifier. Includes the world and the position of the plot in the plot grid.
  */
 public class PlotID
 {
 	private final int x, z;
-	private final UUID worldID;
+	private final String worldName;
 
 
 	/**
@@ -32,13 +30,13 @@ public class PlotID
 	}
 
 	/**
-	 * The unique identifier of the world where the plot is located.
+	 * The name of the world where the plot is located.
 	 * 
-	 * @return The world UUID
+	 * @return The world name
 	 */
-	public UUID getWorldID()
+	public String getWorldName()
 	{
-		return worldID;
+		return worldName;
 	}
 
 	/**
@@ -46,13 +44,13 @@ public class PlotID
 	 * 
 	 * @param x The x coordinate of the plot
 	 * @param z The z coordinate of the plot
-	 * @param worldID The world UUID
+	 * @param worldName The world name
 	 */
-	public PlotID(int x, int z, UUID worldID)
+	public PlotID(int x, int z,String worldName)
 	{
 		this.x = x;
 		this.z = z;
-		this.worldID = worldID;
+		this.worldName = worldName;
 	}
 
 	@Override
@@ -60,7 +58,7 @@ public class PlotID
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((worldID == null) ? 0 : worldID.hashCode());
+		result = prime * result + ((worldName == null) ? 0 : worldName.hashCode());
 		result = prime * result + x;
 		result = prime * result + z;
 		return result;
@@ -73,11 +71,11 @@ public class PlotID
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		PlotID other = (PlotID) obj;
-		if (worldID == null)
+		if (worldName == null)
 		{
-			if (other.worldID != null) return false;
+			if (other.worldName != null) return false;
 		}
-		else if (!worldID.equals(other.worldID)) return false;
+		else if (!worldName.equals(other.worldName)) return false;
 		if (x != other.x) return false;
 		if (z != other.z) return false;
 		return true;

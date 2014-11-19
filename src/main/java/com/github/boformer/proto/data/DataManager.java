@@ -50,6 +50,8 @@ public class DataManager
 	
 	//TODO don't print stack trace/warning message when exception is passed up
 	//TODO don't prepare statement every time
+	
+	//TODO search for world.uuid
 
 	/** 
 	 * <i>Internal method: Initializes the data manager when the server starts up. Creates the database tables on first startup.</i>
@@ -114,7 +116,6 @@ public class DataManager
 			//worlds
 			statement.execute("CREATE TABLE IF NOT EXISTS " + databaseTablePrefix + "worlds ("
 					+ "id INT NOT NULL AUTO_INCREMENT, "
-					+ "uuid CHAR(36) NOT NULL, "
 					+ "name VARCHAR(50) NOT NULL)");
 			
 			//groups
@@ -169,36 +170,47 @@ public class DataManager
 
 
 	/**
-	 * Gets the data of a world. Use it to get the name of an unloaded world.
-	 * @param worldID The world UUID
+	 * Gets the data of a world.
+	 * @param worldName The world name
 	 * @return The world data
 	 * @throws Exception Database exception
 	 */
-	public WorldData getWorldData(UUID worldID) throws Exception
+	public WorldData getWorldData(String worldName) throws Exception
 	{
+		return new WorldData(worldName);
+		
+		//TODO right now there is no data to fetch from db
+		/*
 		try
 		{
 			refreshDatabaseConnection();
 			
 			PreparedStatement statement = databaseConnection.prepareStatement(
-					  "SELECT name "
+					  "SELECT <idk> " 
 					+ "FROM " + databaseTablePrefix + "worlds world "
-					+ "WHERE world.uuid = ?"); //1
+					+ "WHERE world.name = ?"); //1
 			
-			statement.setString(1, worldID.toString());
+			statement.setString(1, worldName.toString());
 			
 			ResultSet resultSet = statement.executeQuery();
 			
 			if(resultSet.next()) 
 			{
-				String name = resultSet.getString("world.name");
-				return new WorldData(name, worldID);
+				WorldData worldData = new WorldData(worldName);
+				
+				String <idk> = resultSet.getString(<idk>");
+				
+				worldData.set<idk>(<idk>);
+				
+				
+				return worldData;
 			}
 			else 
 			{
 				//world does not exist in database
 				return null;
 			}
+
 		}
 		catch(Exception e)
 		{
@@ -207,6 +219,8 @@ public class DataManager
 			
 			throw e;
 		}
+		*/
+		
 	}
 
 	/**
@@ -272,11 +286,11 @@ public class DataManager
 					  "SELECT plot.name, plot.state, plot.creation_date, plot.last_mod_date "
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
 					+ "WHERE plot.world_id = world.id "
-					+ "AND world.uuid = ? " //1
+					+ "AND world.name = ? " //1
 					+ "AND plot.x = ? " //2
 					+ "AND plot.z = ?"); //3
 			
-			statement.setString(1, plotID.getWorldID().toString());
+			statement.setString(1, plotID.getWorldName());
 			statement.setInt(2, plotID.getX());
 			statement.setInt(3, plotID.getZ());
 
@@ -364,14 +378,14 @@ public class DataManager
 	 * Checks if a player has access to a <u>world</u>, using the plugin's internal permission system.
 	 * 
 	 * @param playerID The player UUID
-	 * @param worldID The world UUID
+	 * @param worldName The world name
 	 * @param permission The permission
 	 * @return {@code true} if player has permission, {@code false} if not
 	 * @throws Exception Database Exception
 	 */
-	public boolean hasWorldAccess(UUID playerID, UUID worldID, String permission) throws Exception
+	public boolean hasWorldAccess(UUID playerID, String worldName, String permission) throws Exception
 	{
-		PlayerWorldAccess access = new PlayerWorldAccess(playerID, worldID, permission);
+		PlayerWorldAccess access = new PlayerWorldAccess(playerID, worldName, permission);
 		
 		//first check cache
 		if(playerWorldAccessCache.containsKey(access)) 
@@ -389,11 +403,11 @@ public class DataManager
 					+ "WHERE access.world_id = world.id "
 					+ "AND access.player_id = player.id "
 					+ "AND player.uuid = ? " //1
-					+ "AND world.uuid = ? " //2
+					+ "AND world.name = ? " //2
 					+ "AND access.permission = ?"); //3
 			
 			statement.setString(1, playerID.toString());
-			statement.setString(2, worldID.toString());
+			statement.setString(2, worldName);
 			statement.setString(3, permission);
 
 			ResultSet resultSet = statement.executeQuery();
@@ -455,13 +469,13 @@ public class DataManager
 					+ "AND access.player_id = player.id "
 					+ "AND player.uuid = ? " //1
 					+ "AND plot.world_id = world.id "
-					+ "AND world.uuid = ? " //2
+					+ "AND world.name = ? " //2
 					+ "AND plot.x = ? " //3
 					+ "AND plot.z = ? " //4
 					+ "AND access.permission = ?"); //5
 			
 			statement.setString(1, playerID.toString());
-			statement.setString(2, plotID.getWorldID().toString());
+			statement.setString(2, plotID.getWorldName());
 			statement.setInt(3, plotID.getX());
 			statement.setInt(4, plotID.getZ());
 			statement.setString(5, permission);
@@ -512,7 +526,7 @@ public class DataManager
 					+ "AND player.id = access.player_id "
 					+ "AND plot.x = ? " //1
 					+ "AND plot.z = ? " //2
-					+ "AND world.uuid = ? " //3
+					+ "AND world.name = ? " //3
 					+ "AND access.permission = ? "; //4
 					
 
@@ -520,7 +534,7 @@ public class DataManager
 			
 			statement.setInt(1, plotID.getX());
 			statement.setInt(2, plotID.getZ());
-			statement.setString(3, plotID.getWorldID().toString());
+			statement.setString(3, plotID.getWorldName());
 			statement.setString(4, permission);
 
 			
@@ -549,7 +563,7 @@ public class DataManager
 	}
 	
 	//TODO javadoc
-	public List<String> getPlayerNamesByPermission(UUID worldID, String permission) throws Exception
+	public List<String> getPlayerNamesByPermission(String worldName, String permission) throws Exception
 	{
 		PreparedStatement statement = null;
 
@@ -561,13 +575,13 @@ public class DataManager
 					+ "FROM " + databaseTablePrefix + "player_world_access access, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "worlds world "
 					+ "WHERE world.id = access.world_id "
 					+ "AND player.id = access.player_id "
-					+ "AND world.uuid = ? " //1
+					+ "AND world.name = ? " //1
 					+ "AND access.permission = ? "; //2
 					
 
 			statement = databaseConnection.prepareStatement(query);
 			
-			statement.setString(1, worldID.toString());
+			statement.setString(1, worldName);
 			statement.setString(2, permission);
 
 			
@@ -600,15 +614,15 @@ public class DataManager
 
 	//method for plotcheck
 	/**
-	 * Gets a list of plots with a certain {@link PlotState}, plot creation date and world UUID.
+	 * Gets a list of plots with a certain {@link PlotState}, plot creation date and world name.
 	 * 
 	 * @param state The plot state
 	 * @param latestCreationDate The latest creation date: Only plots that were created before that date are included.
-	 * @param worldID The world UUID
+	 * @param worldName The world name
 	 * @return A list of plot IDs
 	 * @throws Exception Database Exception
 	 */
-	public List<PlotID> getPlotsByLatestCreationDate(PlotState state, Date latestCreationDate, UUID worldID) throws Exception
+	public List<PlotID> getPlotsByLatestCreationDate(PlotState state, Date latestCreationDate, String worldName) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -622,12 +636,12 @@ public class DataManager
 					+ "WHERE plot.world_id = world.id "
 					+ "AND plot.state = ? " //1
 					+ "AND plot.creation_date < ? " //2
-					+ "AND world.uuid = ?"); //3
+					+ "AND world.name = ?"); //3
 
 			
 			statement.setInt(1, state.getId());
 			statement.setTimestamp(2, new Timestamp(latestCreationDate.getTime()));
-			statement.setString(3, worldID.toString());
+			statement.setString(3, worldName);
 			
 			ResultSet resultSet = statement.executeQuery();
 			
@@ -638,7 +652,7 @@ public class DataManager
 				int x = resultSet.getInt("plot.x");
 				int z = resultSet.getInt("plot.x");
 				
-				plotList.add(new PlotID(x, z, worldID));
+				plotList.add(new PlotID(x, z, worldName));
 			}
 			
 			return plotList;
@@ -659,16 +673,16 @@ public class DataManager
 	//method for plotcheck
 
 	/**
-	 * Gets a list of plots with a certain {@link PlotState}, a latest login of a player with a certain permission (e.g. owner) and world UUID.
+	 * Gets a list of plots with a certain {@link PlotState}, a latest login of a player with a certain permission (e.g. owner) and world name.
 	 * 
 	 * @param state The plot state
 	 * @param latestPlayerLoginDate The player login date: Only plots of players who did not log in after that date are included.
 	 * @param permission The permission
-	 * @param worldID The world UUID
+	 * @param worldName The world name
 	 * @return A list of plot IDs
 	 * @throws Exception Database Exception
 	 */
-	public List<PlotID> getPlotsByLatestPlayerLoginDate(PlotState state, Date latestPlayerLoginDate, String permission, UUID worldID) throws Exception
+	public List<PlotID> getPlotsByLatestPlayerLoginDate(PlotState state, Date latestPlayerLoginDate, String permission, String worldName) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -685,12 +699,12 @@ public class DataManager
 					+ "AND player.id = access.player_id "
 					+ "AND player.last_login_date < ? " //2
 					+ "AND access.permission = ? " //3
-					+ "AND world.uuid = ?"); //4
+					+ "AND world.name = ?"); //4
 			
 			statement.setInt(1, state.getId());
 			statement.setTimestamp(2, new Timestamp(latestPlayerLoginDate.getTime()));
 			statement.setString(3, permission);
-			statement.setString(4, worldID.toString());
+			statement.setString(4, worldName);
 			
 			ResultSet resultSet = statement.executeQuery();
 			
@@ -701,7 +715,7 @@ public class DataManager
 				int x = resultSet.getInt("plot.x");
 				int z = resultSet.getInt("plot.x");
 				
-				plotList.add(new PlotID(x, z, worldID));
+				plotList.add(new PlotID(x, z, worldName));
 			}
 			
 			return plotList;
@@ -721,15 +735,15 @@ public class DataManager
 	
 	//method for plotcheck
 	/**
-	 * Gets a list of plots with a certain {@link PlotState}, a certain modification date and world UUID.
+	 * Gets a list of plots with a certain {@link PlotState}, a certain modification date and world name.
 	 * 
 	 * @param state The plot state
 	 * @param latestModificationDate The latest modification date: Only plots that were last modified before that date are included.
-	 * @param worldID The world UUID
+	 * @param worldName The world name
 	 * @return A list of plot IDs
 	 * @throws Exception Database Exception
 	 */
-	public List<PlotID> getPlotsByLatestModificationDate(PlotState state, Date latestModificationDate, UUID worldID) throws Exception
+	public List<PlotID> getPlotsByLatestModificationDate(PlotState state, Date latestModificationDate, String worldName) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -743,12 +757,12 @@ public class DataManager
 					+ "WHERE plot.world_id = world.id "
 					+ "AND plot.state = ? " //1
 					+ "AND plot.modification_date < ? " //2
-					+ "AND world.uuid = ?"); //3
+					+ "AND world.name = ?"); //3
 
 			
 			statement.setInt(1, state.getId());
 			statement.setTimestamp(2, new Timestamp(latestModificationDate.getTime()));
-			statement.setString(3, worldID.toString());
+			statement.setString(3, worldName);
 			
 			ResultSet resultSet = statement.executeQuery();
 			
@@ -759,7 +773,7 @@ public class DataManager
 				int x = resultSet.getInt("plot.x");
 				int z = resultSet.getInt("plot.x");
 				
-				plotList.add(new PlotID(x, z, worldID));
+				plotList.add(new PlotID(x, z, worldName));
 			}
 			
 			return plotList;
@@ -794,7 +808,7 @@ public class DataManager
 			refreshDatabaseConnection();
 			
 			statement = databaseConnection.prepareStatement(
-					  "SELECT DISTINCT world.uuid, plot.x, plot.z "
+					  "SELECT DISTINCT world.name, plot.x, plot.z "
 					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
 					+ "WHERE plot.world_id = world.id "
 					+ "AND plot.state = ?"); //1
@@ -809,12 +823,12 @@ public class DataManager
 			
 			while(resultSet.next()) 
 			{
-				UUID worldID = UUID.fromString(resultSet.getString("world.uuid"));
+				String worldName = resultSet.getString("world.name");
 				
 				int x = resultSet.getInt("plot.x");
 				int z = resultSet.getInt("plot.x");
 				
-				plotList.add(new PlotID(x, z, worldID));
+				plotList.add(new PlotID(x, z, worldName));
 			}
 			
 			return plotList;
@@ -836,12 +850,12 @@ public class DataManager
 	 * Gets a list of plots in a world where a player has a certain permission.
 	 * 
 	 * @param playerID The player UUID
-	 * @param worldID The world UUID
+	 * @param worldName The world name
 	 * @param permission The permission
 	 * @return  A list of plot IDs
 	 * @throws Exception Database Exception
 	 */
-	public List<PlotID> getPlotsByPermission(UUID playerID, UUID worldID, String permission) throws Exception
+	public List<PlotID> getPlotsByPermission(UUID playerID, String worldName, String permission) throws Exception
 	{
 		PreparedStatement statement = null;
 		
@@ -856,12 +870,12 @@ public class DataManager
 					+ "AND plot.id = access.plot_id "
 					+ "AND player.id = access.player_id "
 					+ "AND player.uuid = ? " //1
-					+ "AND world.uuid = ? " //2
+					+ "AND world.name = ? " //2
 					+ "AND access.permission = ? "); //3
 
 			
 			statement.setString(1, playerID.toString());
-			statement.setString(2, worldID.toString());
+			statement.setString(2, worldName);
 			statement.setString(3, permission);
 			
 			ResultSet resultSet = statement.executeQuery();
@@ -873,7 +887,7 @@ public class DataManager
 				int x = resultSet.getInt("plot.x");
 				int z = resultSet.getInt("plot.x");
 				
-				plotList.add(new PlotID(x, z, worldID));
+				plotList.add(new PlotID(x, z, worldName));
 			}
 			
 			return plotList;
