@@ -1,7 +1,7 @@
 package dummy.sponge;
 
-import org.spongepowered.api.entity.Player;
-import org.spongepowered.api.event.Cancellable;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.util.event.Cancellable;
 import org.spongepowered.api.event.world.WorldEvent;
 import org.spongepowered.api.world.Location;
 

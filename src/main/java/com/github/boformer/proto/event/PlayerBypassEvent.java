@@ -2,6 +2,9 @@ package com.github.boformer.proto.event;
 
 import java.util.UUID;
 
+import org.spongepowered.api.Game;
+import org.spongepowered.api.util.event.callback.CallbackList;
+
 //TODO javadoc
 public class PlayerBypassEvent extends Event
 {
@@ -9,8 +12,9 @@ public class PlayerBypassEvent extends Event
 	private final boolean bypassing;
 
 
-	public PlayerBypassEvent(UUID playerID, boolean bypassing)
+	public PlayerBypassEvent(Game game, UUID playerID, boolean bypassing)
 	{
+		super(game);
 		this.playerID = playerID;
 		this.bypassing = bypassing;
 	}
@@ -26,9 +30,9 @@ public class PlayerBypassEvent extends Event
 	}
 
 	@Override
-	public boolean isCancellable()
+	public CallbackList getCallbacks() 
 	{
-		return false;
+		// TODO wait for sponge implementation to see how this works
+		return null;
 	}
-
 }

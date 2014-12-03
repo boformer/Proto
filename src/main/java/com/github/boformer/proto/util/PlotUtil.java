@@ -1,8 +1,6 @@
 package com.github.boformer.proto.util;
 
 import org.spongepowered.api.math.Vector3d;
-import org.spongepowered.api.world.World;
-
 import com.github.boformer.proto.config.ConfigManager;
 import com.github.boformer.proto.config.WorldConfig;
 import com.github.boformer.proto.data.PlotID;

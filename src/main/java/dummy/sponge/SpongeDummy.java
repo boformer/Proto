@@ -2,7 +2,7 @@ package dummy.sponge;
 
 import java.util.UUID;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.World;
 
 /**

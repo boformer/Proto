@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.spongepowered.api.Game;
-import org.spongepowered.api.entity.Player;
-import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.util.event.Subscribe;
 import org.spongepowered.api.world.World;
 
 import com.github.boformer.proto.ProtoPlugin;
@@ -75,7 +75,7 @@ public class WorldEditConnector
 	public void initialize() 
 	{
 		//register for events
-		game.getEventManager().register(this);
+		game.getEventManager().register(plugin, this);
 		
 		//create masks for all logged in players
 		for(Player player : game.getOnlinePlayers()) 

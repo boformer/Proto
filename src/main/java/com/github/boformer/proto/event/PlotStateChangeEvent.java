@@ -1,9 +1,8 @@
 package com.github.boformer.proto.event;
 
-import java.util.Collections;
-import java.util.Map;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.util.event.callback.CallbackList;
 
-import com.github.boformer.proto.access.PlayerPlotAccess;
 import com.github.boformer.proto.data.PlotID;
 import com.github.boformer.proto.data.PlotState;
 
@@ -16,8 +15,9 @@ public class PlotStateChangeEvent extends Event
 	private final PlotState newState;
 
 
-	public PlotStateChangeEvent(PlotID plotID, PlotState oldState, PlotState newState)
+	public PlotStateChangeEvent(Game game, PlotID plotID, PlotState oldState, PlotState newState)
 	{
+		super(game);
 		this.plotID = plotID;
 		this.oldState = oldState;
 		this.newState = newState;
@@ -37,10 +37,11 @@ public class PlotStateChangeEvent extends Event
 	{
 		return newState;
 	}
-
+	
 	@Override
-	public boolean isCancellable()
+	public CallbackList getCallbacks() 
 	{
-		return false;
+		// TODO wait for sponge implementation to see how this works
+		return null;
 	}
 }

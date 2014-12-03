@@ -1,7 +1,5 @@
 package com.github.boformer.proto.data;
 
-import java.util.UUID;
-
 /**
  * Data of a world.
  */

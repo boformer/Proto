@@ -1,10 +1,7 @@
 package com.github.boformer.proto.config;
 
 import java.util.List;
-import java.util.UUID;
-
 import com.github.boformer.proto.ProtoPlugin;
-import com.github.boformer.proto.data.WorldData;
 
 /**
  * Provides and manages the plugin and world configuration.

@@ -2,7 +2,7 @@ package com.github.boformer.proto.event;
 
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.util.event.Subscribe;
 
 import com.github.boformer.proto.ProtoPlugin;
 import com.github.boformer.proto.config.WorldConfig;

@@ -1,6 +1,6 @@
 package dummy.worldedit;
 
-import org.spongepowered.api.entity.Player;
+import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.World;
 
 import com.sk89q.worldedit.LocalPlayer;

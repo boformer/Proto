@@ -3,6 +3,9 @@ package com.github.boformer.proto.event;
 import java.util.Collections;
 import java.util.Map;
 
+import org.spongepowered.api.Game;
+import org.spongepowered.api.util.event.callback.CallbackList;
+
 import com.github.boformer.proto.access.PlayerPlotAccess;
 
 //TODO javadoc
@@ -12,8 +15,9 @@ public class PlotAccessChangeEvent extends Event
 	private final Map<PlayerPlotAccess, Boolean> accessChangeMap;
 
 
-	public PlotAccessChangeEvent(Map<PlayerPlotAccess, Boolean> accessChangeMap)
+	public PlotAccessChangeEvent(Game game, Map<PlayerPlotAccess, Boolean> accessChangeMap)
 	{
+		super(game);
 		this.accessChangeMap = Collections.unmodifiableMap(accessChangeMap);
 	}
 
@@ -21,10 +25,11 @@ public class PlotAccessChangeEvent extends Event
 	{
 		return accessChangeMap;
 	}
-
+	
 	@Override
-	public boolean isCancellable()
+	public CallbackList getCallbacks() 
 	{
-		return false;
+		// TODO wait for sponge implementation to see how this works
+		return null;
 	}
 }

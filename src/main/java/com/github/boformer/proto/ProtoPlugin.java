@@ -1,7 +1,7 @@
 package com.github.boformer.proto;
 
 import org.slf4j.Logger;
-import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.util.event.Subscribe;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -57,7 +57,7 @@ public class ProtoPlugin
 		}
 
 		// register events
-		event.getGame().getEventManager().register(new BlockEventHandler(this));
+		event.getGame().getEventManager().register(this, new BlockEventHandler(this));
 	}
 	
 	/**

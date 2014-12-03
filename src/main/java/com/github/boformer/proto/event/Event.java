@@ -1,21 +1,19 @@
 package com.github.boformer.proto.event;
 
-import org.spongepowered.api.event.Result;
+import org.spongepowered.api.Game;
 
-public abstract class Event implements org.spongepowered.api.event.Event
+public abstract class Event implements org.spongepowered.api.event.GameEvent
 {
-	private Result result = Result.DEFAULT;
-
+	private final Game game;
 	
-	@Override
-	public Result getResult()
+	public Event(Game game) 
 	{
-		return result;
+		this.game = game;
 	}
 
 	@Override
-	public void setResult(Result result)
+	public Game getGame() 
 	{
-		this.result = result;
+		return game;
 	}
 }
