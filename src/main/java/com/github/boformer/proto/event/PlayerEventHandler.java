@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.entity.EntityInteractionType;
 import org.spongepowered.api.event.player.PlayerInteractEvent;
 import org.spongepowered.api.util.event.Subscribe;
 import org.spongepowered.api.world.World;
@@ -45,7 +46,7 @@ public class PlayerEventHandler
 	@Subscribe
 	public void onBlockBreak(PlayerInteractEvent event) // TODO replace dummy event when supported
 	{
-		
+		//TODO other interaction? animals?
 		
 		
 		
@@ -58,6 +59,9 @@ public class PlayerEventHandler
 		 * 		b) plot is public --> continue with 3.
 		 * 3. check server and plugin world permission --> return
 		 */
+		
+		//always allow that (creative mode block select)
+		if(event.getInteractionType() == EntityInteractionType.MIDDLE_CLICK) return;
 		
 		World world = (World) event.getPlayer().getWorld();
 		
