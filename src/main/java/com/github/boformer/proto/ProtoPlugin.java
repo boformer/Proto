@@ -8,7 +8,7 @@ import org.spongepowered.api.plugin.Plugin;
 
 import com.github.boformer.proto.config.ConfigManager;
 import com.github.boformer.proto.data.DataManager;
-import com.github.boformer.proto.event.BlockEventHandler;
+import com.github.boformer.proto.event.PlayerEventHandler;
 
 /**
  * The Plugin for Sponge. 
@@ -57,7 +57,7 @@ public class ProtoPlugin
 		}
 
 		// register events
-		event.getGame().getEventManager().register(this, new BlockEventHandler(this));
+		event.getGame().getEventManager().register(this, new PlayerEventHandler(this));
 	}
 	
 	/**

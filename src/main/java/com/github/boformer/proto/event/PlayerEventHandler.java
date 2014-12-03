@@ -1,8 +1,13 @@
 package com.github.boformer.proto.event;
 
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
+import org.spongepowered.api.block.BlockLoc;
+import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.event.player.PlayerInteractEvent;
 import org.spongepowered.api.util.event.Subscribe;
+import org.spongepowered.api.world.World;
 
 import com.github.boformer.proto.ProtoPlugin;
 import com.github.boformer.proto.config.WorldConfig;
@@ -11,20 +16,21 @@ import com.github.boformer.proto.data.PlotID;
 import com.github.boformer.proto.data.PlotState;
 import com.github.boformer.proto.util.PlotUtil;
 
-import dummy.sponge.BlockBreakEventDummy;
 import dummy.sponge.SpongeDummy;
 
-public class BlockEventHandler
+public class PlayerEventHandler
 {
 	private final ProtoPlugin plugin;
 
+	
+	//TODO raw BlockChangeEvent, fluids, fire, pistons, flora, dispenser, item spawn (separate plugin?) etc.
 
 	/**
 	 * <i>Internal constructor: Constructs a new block event handler that can be registered in the server plugin manager.</i>
 	 * 
 	 * @param plugin The plugin
 	 */
-	public BlockEventHandler(ProtoPlugin plugin)
+	public PlayerEventHandler(ProtoPlugin plugin)
 	{
 		this.plugin = plugin;
 	}
@@ -37,8 +43,13 @@ public class BlockEventHandler
 	 * @param event The block break event
 	 */
 	@Subscribe
-	public void onBlockBreak(BlockBreakEventDummy event) // TODO replace dummy event when supported
+	public void onBlockBreak(PlayerInteractEvent event) // TODO replace dummy event when supported
 	{
+		
+		
+		
+		
+		
 		/*
 		 * What it does: 
 		 * 1. no world config --> just ignore the event. return
@@ -48,7 +59,9 @@ public class BlockEventHandler
 		 * 3. check server and plugin world permission --> return
 		 */
 		
-		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getWorld().getName());
+		World world = (World) event.getPlayer().getWorld();
+		
+		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world.getName());
 
 		//no config -> not our job
 		if(worldConfig == null) return;
@@ -59,7 +72,12 @@ public class BlockEventHandler
 			{
 				// plots enabled -> check plot permissions
 				
-				PlotID plotID = PlotUtil.calculatePlotID(event.getLocation().getPosition(), event.getWorld().getName(), worldConfig);
+				BlockLoc block = event.getBlock().orNull();
+				
+				// no block affected... air?
+				if(block == null || block.getType() == BlockTypes.AIR) return;
+				
+				PlotID plotID = PlotUtil.calculatePlotID(block.getPosition(), world.getName(), worldConfig);
 				PlotData plotData = plugin.getDataManager().getPlotData(plotID);
 			
 				if(plotData.getState() != PlotState.PUBLIC) 
@@ -69,7 +87,7 @@ public class BlockEventHandler
 					//TODO add proto.plot.build.*
 					
 					//1. server
-					if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "proto.plot.build." + plotID.getX() + "." + plotID.getZ())) 
+					if(SpongeDummy.hasWorldPermission(event.getPlayer(), world, "proto.plot.build." + plotID.getX() + "." + plotID.getZ())) 
 					{
 						//player has permission in plot
 						return;
@@ -115,14 +133,14 @@ public class BlockEventHandler
 			//permission sources: 1. server, 2. plugin 
 			
 			//1. server
-			if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getWorld(), "proto.world.build")) 
+			if(SpongeDummy.hasWorldPermission(event.getPlayer(), world, "proto.world.build")) 
 			{
 				//player has permission in world
 				return;
 			}
 			
 			//2. plugin
-			else if(plugin.getDataManager().hasWorldAccess(event.getPlayer().getUniqueId(), event.getWorld().getName(), "build")) 
+			else if(plugin.getDataManager().hasWorldAccess(event.getPlayer().getUniqueId(), world.getName(), "build")) 
 			{
 				//player has permission in world
 				return;
@@ -134,7 +152,7 @@ public class BlockEventHandler
 				
 				if(worldConfig.plotsEnabled) 
 				{
-					if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getPlayer().getWorld(), "proto.plot.claim")) 
+					if(SpongeDummy.hasWorldPermission(event.getPlayer(), world, "proto.plot.claim")) 
 					{
 						event.getPlayer().sendMessage("In this world, you can not build in public plots!");
 						event.getPlayer().sendMessage("Use /plot claim to claim this plot."); //TODO add price
@@ -147,7 +165,7 @@ public class BlockEventHandler
 				else
 				{
 					//TODO limit list items to config.maxListSize?
-					List<String> managers = plugin.getDataManager().getPlayerNamesByPermission(event.getWorld().getName(), "manage");
+					List<String> managers = plugin.getDataManager().getPlayerNamesByPermission(world.getName(), "manage");
 					
 					if(managers.size() == 0) 
 					{
