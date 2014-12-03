@@ -39,12 +39,12 @@ public class PlayerEventHandler
 	//TODO onblockplace
 	
 	/**
-	 * Called when a block is mined by a player.
+	 * Called when a player interacts with the world.
 	 * 
-	 * @param event The block break event
+	 * @param event The player interact event
 	 */
 	@Subscribe
-	public void onBlockBreak(PlayerInteractEvent event) // TODO replace dummy event when supported
+	public void onPlayerInteract(PlayerInteractEvent event) // TODO replace dummy event when supported
 	{
 		//TODO other interaction? animals?
 		
