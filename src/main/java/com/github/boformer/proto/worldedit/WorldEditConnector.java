@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.event.message.CommandEvent;
+import org.spongepowered.api.event.player.PlayerChangeWorldEvent;
+import org.spongepowered.api.event.player.PlayerJoinEvent;
 import org.spongepowered.api.util.event.Subscribe;
 import org.spongepowered.api.world.World;
 
@@ -31,10 +34,6 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.snapshots.Snapshot;
 import com.sk89q.worldedit.snapshots.SnapshotRestore;
 
-import dummy.sponge.PlayerCommandPreprocessEventDummy;
-import dummy.sponge.PlayerJoinEventDummy;
-import dummy.sponge.PlayerPortalEventDummy;
-import dummy.sponge.PlayerTeleportEventDummy;
 import dummy.sponge.SpongeDummy;
 import dummy.worldedit.WorldEditDummy;
 
@@ -126,7 +125,7 @@ public class WorldEditConnector
 	
 	//TODO javadoc
 	@Subscribe
-	public void onPlayerJoin(PlayerJoinEventDummy event) 
+	public void onPlayerJoin(PlayerJoinEvent event) 
 	{
 		//method checks if world is plot world, just call it
 		updateMask(event.getPlayer());
@@ -134,13 +133,18 @@ public class WorldEditConnector
 	
 	//TODO javadoc
 	@Subscribe
-	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEventDummy event) 
+	public void onCommand(CommandEvent event) 
 	{
 		//block the //gmask command, so players can't change the mask. Also the single-/ version ;)
 		
+		//ignore console commands
+		if(!(event.getSource() instanceof Player)) return;
+		
+		Player player = (Player) event.getSource();
+		
 		if(event.getCommand().toLowerCase().startsWith("/gmask") || event.getCommand().toLowerCase().startsWith("//gmask")) 
 		{
-			World world = event.getPlayer().getWorld();
+			World world = player.getWorld();
 			WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world.getName());
 			
 			//TODO config value for worldedit behaviour
@@ -149,32 +153,19 @@ public class WorldEditConnector
 			{
 				event.setCancelled(true);
 				
-				event.getPlayer().sendMessage("You can't use this command in plot worlds.");
+				player.sendMessage("You can't use this command in plot worlds.");
 			}
 		}
 	}
 	
 	//TODO javadoc
 	@Subscribe
-	public void onPlayerTeleport(PlayerTeleportEventDummy event) 
+	public void onPlayerChangeWorld(PlayerChangeWorldEvent event) 
 	{
-		World fromWorld = event.getFromWorld();
-		World toWorld = event.getToWorld();
-		
-		//no world change
-		if(fromWorld == toWorld) return;
-		
 		//method checks if world is plot world, just call it
-		updateMask(event.getPlayer(), toWorld);
+		updateMask(event.getPlayer(), event.getToWorld());
 	}
-	
-	//TODO portal event included in teleport event? wait for sponge...
-	//TODO javadoc
-	@Subscribe
-	public void onPlayerPortal(PlayerPortalEventDummy event) 
-	{
-		onPlayerTeleport(event);
-	}
+
 	
 	/**
 	 * Replaces the global mask of a player with an updated version containing only the plots where the player has WorldEdit permission. Uses the world the player is in at the moment.
