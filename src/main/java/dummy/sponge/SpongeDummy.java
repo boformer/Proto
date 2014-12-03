@@ -10,16 +10,6 @@ import org.spongepowered.api.world.World;
  */
 public class SpongeDummy
 {
-	public static UUID getPlayerUniqueId(Player player)
-	{
-		return null;
-	}
-
-	public static World getPlayerWorld(Player player)
-	{
-		return null;
-	}
-	
 	public static int getWorldMaxHeight(World world) 
 	{
 		return 256;

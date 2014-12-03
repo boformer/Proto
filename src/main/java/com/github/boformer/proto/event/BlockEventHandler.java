@@ -76,7 +76,7 @@ public class BlockEventHandler
 					}
 					
 					//2. plugin
-					else if(plugin.getDataManager().hasPlotAccess(SpongeDummy.getPlayerUniqueId(event.getPlayer()), plotID, "build")) 
+					else if(plugin.getDataManager().hasPlotAccess(event.getPlayer().getUniqueId(), plotID, "build")) 
 					{
 						//player has permission in plot
 						return;
@@ -122,7 +122,7 @@ public class BlockEventHandler
 			}
 			
 			//2. plugin
-			else if(plugin.getDataManager().hasWorldAccess(SpongeDummy.getPlayerUniqueId(event.getPlayer()), event.getWorld().getName(), "build")) 
+			else if(plugin.getDataManager().hasWorldAccess(event.getPlayer().getUniqueId(), event.getWorld().getName(), "build")) 
 			{
 				//player has permission in world
 				return;
@@ -134,7 +134,7 @@ public class BlockEventHandler
 				
 				if(worldConfig.plotsEnabled) 
 				{
-					if(SpongeDummy.hasWorldPermission(event.getPlayer(), SpongeDummy.getPlayerWorld(event.getPlayer()), "proto.plot.claim")) 
+					if(SpongeDummy.hasWorldPermission(event.getPlayer(), event.getPlayer().getWorld(), "proto.plot.claim")) 
 					{
 						event.getPlayer().sendMessage("In this world, you can not build in public plots!");
 						event.getPlayer().sendMessage("Use /plot claim to claim this plot."); //TODO add price

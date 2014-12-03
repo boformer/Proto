@@ -100,7 +100,7 @@ public class WorldEditConnector
 			if(player == null) continue;
 			
 			//Doesn't affect the player's current world
-			if(!SpongeDummy.getPlayerWorld(player).getName().equals(access.getPlotID().getWorldName())) continue;
+			if(!player.getWorld().getName().equals(access.getPlotID().getWorldName())) continue;
 			
 			maskChangePlayers.add(player);
 		}
@@ -140,7 +140,7 @@ public class WorldEditConnector
 		
 		if(event.getCommand().toLowerCase().startsWith("/gmask") || event.getCommand().toLowerCase().startsWith("//gmask")) 
 		{
-			World world = SpongeDummy.getPlayerWorld(event.getPlayer());
+			World world = event.getPlayer().getWorld();
 			WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(world.getName());
 			
 			//TODO config value for worldedit behaviour
@@ -182,7 +182,7 @@ public class WorldEditConnector
 	 */
 	public void updateMask(Player player) 
 	{
-		World world = SpongeDummy.getPlayerWorld(player);
+		World world = player.getWorld();
 		
 		updateMask(player, world);
 	}
@@ -217,7 +217,7 @@ public class WorldEditConnector
 			List<PlotID> worldEditPlots;
 			try 
 			{
-				worldEditPlots = plugin.getDataManager().getPlotsByPermission(SpongeDummy.getPlayerUniqueId(player), world.getName(), "worldedit");
+				worldEditPlots = plugin.getDataManager().getPlotsByPermission(player.getUniqueId(), world.getName(), "worldedit");
 			} 
 			catch (Exception e) 
 			{
