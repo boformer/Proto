@@ -1,7 +1,16 @@
 package com.github.boformer.proto.config;
 
-import java.util.List;
+import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.spongepowered.api.util.config.ConfigFile;
+
 import com.github.boformer.proto.ProtoPlugin;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigValue;
 
 /**
  * Provides and manages the plugin and world configuration.
@@ -15,16 +24,23 @@ public class ConfigManager
 {
 	private final ProtoPlugin plugin;
 	
+	private final File pluginConfigFile;
+	
+	private PluginConfig pluginConfig;
+	private HashMap<String, WorldConfig> worldConfigs;
+	
 	/** 
 	 * <i>Internal method: Create a new config manager.</i>
 	 * 
 	 * @param plugin The plugin
+	 * @param pluginConfigFile The recommended config file
 	 */
-	public ConfigManager(ProtoPlugin plugin)
+	public ConfigManager(ProtoPlugin plugin, File pluginConfigFile) 
 	{
 		this.plugin = plugin;
+		this.pluginConfigFile = pluginConfigFile;
 	}
-
+	
 	/** 
 	 * <i>Internal method: Initializes the config manager when the server starts up.</i>
 	 * 
@@ -34,9 +50,27 @@ public class ConfigManager
 	 */
 	public void initialize()
 	{
-		//TODO hocon: copy default plugin config
+		//copy default plugin config
+		File fallbackPluginConfigFile = new File(getClass().getClassLoader().getResource("Proto.conf").getFile());
+		ConfigFile fallbackPluginConfig = ConfigFile.parseFile(fallbackPluginConfigFile);
+		
+		ConfigFile config = ConfigFile.parseFile(pluginConfigFile).withFallback(fallbackPluginConfig);
+		config.save(true);
+		
+		pluginConfig = new PluginConfig(config);
+		
+		for(Map.Entry<String, ConfigValue> entry : config.getConfig("worlds").entrySet()) 
+		{
+			Config section = config.getConfig("worlds").getConfig(entry.getKey());
+			
+			WorldConfig worldConfig = new WorldConfig(section);
+			
+			worldConfigs.put(entry.getKey(), worldConfig);
+		}
 	}
 	
+
+
 	/**
 	 * Gets the main plugin configuration.
 	 * 
@@ -44,8 +78,7 @@ public class ConfigManager
 	 */
 	public PluginConfig getPluginConfig() 
 	{
-		//TODO hocon
-		return null;
+		return pluginConfig;
 	}
 	
 	//TODO use world UUID instead? problem when world changes name?
@@ -61,17 +94,15 @@ public class ConfigManager
 	 */
 	public WorldConfig getWorldConfig(String name) 
 	{
-		//TODO hocon
-		return null;
+		return worldConfigs.get(name);
 	}
 	
 	/**
 	 * Gets the list of all worlds with an existing configuration
 	 * @return The list of world names
 	 */
-	public List<String> getWorldNames() 
+	public Set<String> getWorldNames() 
 	{
-		//TODO hocon
-		return null;
+		return Collections.unmodifiableSet(worldConfigs.keySet());
 	}
 }

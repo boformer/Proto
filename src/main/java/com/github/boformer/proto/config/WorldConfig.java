@@ -1,10 +1,17 @@
 package com.github.boformer.proto.config;
 
+import com.typesafe.config.Config;
+
 /**
  * World configuration.
  */
 public class WorldConfig
 {
+	public WorldConfig(Config config)
+	{
+		// TODO Auto-generated constructor stub
+	}
+
 	public boolean plotsEnabled;
 	
 	public int plotSizeX;

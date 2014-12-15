@@ -40,7 +40,7 @@ public class ProtoPlugin
 		logger = event.getPluginLog();
 
 		// init ConfigManager
-		configManager = new ConfigManager(this);
+		configManager = new ConfigManager(this, event.getRecommendedConfigurationFile());
 		configManager.initialize();
 
 		// init DataManager
