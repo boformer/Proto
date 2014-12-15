@@ -81,7 +81,6 @@ public class ConfigManager
 		return pluginConfig;
 	}
 	
-	//TODO use world UUID instead? problem when world changes name?
 	/**
 	 * Gets the configuration for a world.
 	 * 
