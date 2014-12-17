@@ -37,6 +37,9 @@ public class DataManager
 	private LRUMap<PlayerPlotAccess, Boolean> playerPlotAccessCache;
 	private LRUMap<PlayerWorldAccess, Boolean> playerWorldAccessCache;
 	
+	//Prepared Statements Array. Statements can be re-used while the connection is open
+	private PreparedStatement statements[] = new PreparedStatement[12];
+	
 	
 	/** 
 	 * <i>Internal constructor: Create a new data manager.</i>
@@ -49,9 +52,6 @@ public class DataManager
 	}
 	
 	//TODO don't print stack trace/warning message when exception is passed up
-	//TODO don't prepare statement every time
-	
-	//TODO search for world.uuid
 
 	/** 
 	 * <i>Internal method: Initializes the data manager when the server starts up. Creates the database tables on first startup.</i>
@@ -152,6 +152,11 @@ public class DataManager
 	 */
 	public void stop() throws Exception
 	{
+		for(PreparedStatement stmt : statements) 
+		{
+			if(stmt != null) stmt.close();
+		}
+		
 		if(databaseConnection != null) 
 		{
 			databaseConnection.close();
@@ -235,14 +240,17 @@ public class DataManager
 		{
 			refreshDatabaseConnection();
 			
-			PreparedStatement statement = databaseConnection.prepareStatement(
-					  "SELECT name "
-					+ "FROM " + databaseTablePrefix + "players player"
-					+ "WHERE player.uuid = ?"); //1
+			if(statements[0] == null || statements[0].isClosed()) 
+			{
+				statements[0] = databaseConnection.prepareStatement(
+						  "SELECT name "
+						+ "FROM " + databaseTablePrefix + "players player"
+						+ "WHERE player.uuid = ?"); //1
+			}
 			
-			statement.setString(1, playerID.toString());
+			statements[0].setString(1, playerID.toString());
 			
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[0].executeQuery();
 			
 			if(resultSet.next()) 
 			{
@@ -282,19 +290,22 @@ public class DataManager
 		{
 			refreshDatabaseConnection();
 			
-			PreparedStatement statement = databaseConnection.prepareStatement(
-					  "SELECT plot.name, plot.state, plot.creation_date, plot.last_mod_date "
-					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
-					+ "WHERE plot.world_id = world.id "
-					+ "AND world.name = ? " //1
-					+ "AND plot.x = ? " //2
-					+ "AND plot.z = ?"); //3
+			if(statements[1] == null || statements[1].isClosed()) 
+			{
+				statements[1] = databaseConnection.prepareStatement(
+						  "SELECT plot.name, plot.state, plot.creation_date, plot.last_mod_date "
+						+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
+						+ "WHERE plot.world_id = world.id "
+						+ "AND world.name = ? " //1
+						+ "AND plot.x = ? " //2
+						+ "AND plot.z = ?"); //3
+			}
 			
-			statement.setString(1, plotID.getWorldName());
-			statement.setInt(2, plotID.getX());
-			statement.setInt(3, plotID.getZ());
+			statements[1].setString(1, plotID.getWorldName());
+			statements[1].setInt(2, plotID.getX());
+			statements[1].setInt(3, plotID.getZ());
 
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[1].executeQuery();
 			
 			if(resultSet.next()) 
 			{
@@ -339,14 +350,17 @@ public class DataManager
 		{
 			refreshDatabaseConnection();
 			
-			PreparedStatement statement = databaseConnection.prepareStatement(
-					  "SELECT group.name "
-					+ "FROM " + databaseTablePrefix + "groups group"
-					+ "WHERE group.id = ?"); //1
+			if(statements[2] == null || statements[2].isClosed()) 
+			{
+				statements[2] = databaseConnection.prepareStatement(
+						  "SELECT group.name "
+						+ "FROM " + databaseTablePrefix + "groups group"
+						+ "WHERE group.id = ?"); //1
+			}
 			
-			statement.setInt(1, groupID);
+			statements[2].setInt(1, groupID);
 			
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[2].executeQuery();
 			
 			if(resultSet.next()) 
 			{
@@ -397,20 +411,23 @@ public class DataManager
 		{
 			refreshDatabaseConnection();
 			
-			PreparedStatement statement = databaseConnection.prepareStatement(
-					  "SELECT 1 "
-					+ "FROM " + databaseTablePrefix + "player_world_access access, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "worlds world "
-					+ "WHERE access.world_id = world.id "
-					+ "AND access.player_id = player.id "
-					+ "AND player.uuid = ? " //1
-					+ "AND world.name = ? " //2
-					+ "AND access.permission = ?"); //3
-			
-			statement.setString(1, playerID.toString());
-			statement.setString(2, worldName);
-			statement.setString(3, permission);
+			if(statements[3] == null || statements[3].isClosed()) 
+			{
+				statements[3] = databaseConnection.prepareStatement(
+						  "SELECT 1 "
+						+ "FROM " + databaseTablePrefix + "player_world_access access, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "worlds world "
+						+ "WHERE access.world_id = world.id "
+						+ "AND access.player_id = player.id "
+						+ "AND player.uuid = ? " //1
+						+ "AND world.name = ? " //2
+						+ "AND access.permission = ?"); //3
+			}
 
-			ResultSet resultSet = statement.executeQuery();
+			statements[3].setString(1, playerID.toString());
+			statements[3].setString(2, worldName);
+			statements[3].setString(3, permission);
+
+			ResultSet resultSet = statements[3].executeQuery();
 			
 			if(resultSet.next()) 
 			{
@@ -462,25 +479,28 @@ public class DataManager
 		{
 			refreshDatabaseConnection();
 			
-			PreparedStatement statement = databaseConnection.prepareStatement(
-					  "SELECT 1 "
-					+ "FROM " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
-					+ "WHERE access.plot_id = plot.id "
-					+ "AND access.player_id = player.id "
-					+ "AND player.uuid = ? " //1
-					+ "AND plot.world_id = world.id "
-					+ "AND world.name = ? " //2
-					+ "AND plot.x = ? " //3
-					+ "AND plot.z = ? " //4
-					+ "AND access.permission = ?"); //5
-			
-			statement.setString(1, playerID.toString());
-			statement.setString(2, plotID.getWorldName());
-			statement.setInt(3, plotID.getX());
-			statement.setInt(4, plotID.getZ());
-			statement.setString(5, permission);
+			if(statements[4] == null || statements[4].isClosed()) 
+			{
+				statements[4] = databaseConnection.prepareStatement(
+						  "SELECT 1 "
+						+ "FROM " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
+						+ "WHERE access.plot_id = plot.id "
+						+ "AND access.player_id = player.id "
+						+ "AND player.uuid = ? " //1
+						+ "AND plot.world_id = world.id "
+						+ "AND world.name = ? " //2
+						+ "AND plot.x = ? " //3
+						+ "AND plot.z = ? " //4
+						+ "AND access.permission = ?"); //5
+			}
+		
+			statements[4].setString(1, playerID.toString());
+			statements[4].setString(2, plotID.getWorldName());
+			statements[4].setInt(3, plotID.getX());
+			statements[4].setInt(4, plotID.getZ());
+			statements[4].setString(5, permission);
 
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[4].executeQuery();
 			
 			if(resultSet.next()) 
 			{
@@ -513,32 +533,32 @@ public class DataManager
 	//TODO javadoc
 	public List<String> getPlayerNamesByPermission(PlotID plotID, String permission) throws Exception
 	{
-		PreparedStatement statement = null;
 
 		try
 		{
 			refreshDatabaseConnection();
 			
-			String query = "SELECT DISTINCT player.name"
-					+ "FROM " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "worlds world "
-					+ "WHERE plot.world_id = world.id "
-					+ "AND plot.id = access.plot_id "
-					+ "AND player.id = access.player_id "
-					+ "AND plot.x = ? " //1
-					+ "AND plot.z = ? " //2
-					+ "AND world.name = ? " //3
-					+ "AND access.permission = ? "; //4
-					
+			if(statements[5] == null || statements[5].isClosed()) 
+			{
+				statements[5] = databaseConnection.prepareStatement(
+						  "SELECT DISTINCT player.name"
+						+ "FROM " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "worlds world "
+						+ "WHERE plot.world_id = world.id "
+						+ "AND plot.id = access.plot_id "
+						+ "AND player.id = access.player_id "
+						+ "AND plot.x = ? " //1
+						+ "AND plot.z = ? " //2
+						+ "AND world.name = ? " //3
+						+ "AND access.permission = ? "); //4
+			}
 
-			statement = databaseConnection.prepareStatement(query);
-			
-			statement.setInt(1, plotID.getX());
-			statement.setInt(2, plotID.getZ());
-			statement.setString(3, plotID.getWorldName());
-			statement.setString(4, permission);
+			statements[5].setInt(1, plotID.getX());
+			statements[5].setInt(2, plotID.getZ());
+			statements[5].setString(3, plotID.getWorldName());
+			statements[5].setString(4, permission);
 
 			
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[5].executeQuery();
 			
 			List<String> playerNameList = new ArrayList<>();
 			
@@ -555,37 +575,32 @@ public class DataManager
 			e.printStackTrace();
 			
 			throw e;
-		}
-		finally
-		{
-			statement.close();
 		}
 	}
 	
 	//TODO javadoc
 	public List<String> getPlayerNamesByPermission(String worldName, String permission) throws Exception
 	{
-		PreparedStatement statement = null;
-
 		try
 		{
 			refreshDatabaseConnection();
 			
-			String query = "SELECT DISTINCT player.name"
-					+ "FROM " + databaseTablePrefix + "player_world_access access, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "worlds world "
-					+ "WHERE world.id = access.world_id "
-					+ "AND player.id = access.player_id "
-					+ "AND world.name = ? " //1
-					+ "AND access.permission = ? "; //2
+			if(statements[6] == null || statements[6].isClosed()) 
+			{
+				statements[6] = databaseConnection.prepareStatement(
+						  "SELECT DISTINCT player.name"
+						+ "FROM " + databaseTablePrefix + "player_world_access access, " + databaseTablePrefix + "players player, " + databaseTablePrefix + "worlds world "
+						+ "WHERE world.id = access.world_id "
+						+ "AND player.id = access.player_id "
+						+ "AND world.name = ? " //1
+						+ "AND access.permission = ? "); //2
+			}
 					
-
-			statement = databaseConnection.prepareStatement(query);
-			
-			statement.setString(1, worldName);
-			statement.setString(2, permission);
+			statements[6].setString(1, worldName);
+			statements[6].setString(2, permission);
 
 			
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[6].executeQuery();
 			
 			List<String> playerNameList = new ArrayList<>();
 			
@@ -602,10 +617,6 @@ public class DataManager
 			e.printStackTrace();
 			
 			throw e;
-		}
-		finally
-		{
-			statement.close();
 		}
 	}
 		
@@ -624,26 +635,26 @@ public class DataManager
 	 */
 	public List<PlotID> getPlotsByLatestCreationDate(PlotState state, Date latestCreationDate, String worldName) throws Exception
 	{
-		PreparedStatement statement = null;
-		
 		try
 		{
 			refreshDatabaseConnection();
 			
-			statement = databaseConnection.prepareStatement(
-					  "SELECT DISTINCT plot.x, plot.z "
-					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
-					+ "WHERE plot.world_id = world.id "
-					+ "AND plot.state = ? " //1
-					+ "AND plot.creation_date < ? " //2
-					+ "AND world.name = ?"); //3
-
+			if(statements[7] == null || statements[7].isClosed()) 
+			{
+				statements[7] = databaseConnection.prepareStatement(
+						  "SELECT DISTINCT plot.x, plot.z "
+						+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
+						+ "WHERE plot.world_id = world.id "
+						+ "AND plot.state = ? " //1
+						+ "AND plot.creation_date < ? " //2
+						+ "AND world.name = ?"); //3
+			}
 			
-			statement.setInt(1, state.getId());
-			statement.setTimestamp(2, new Timestamp(latestCreationDate.getTime()));
-			statement.setString(3, worldName);
+			statements[7].setInt(1, state.getId());
+			statements[7].setTimestamp(2, new Timestamp(latestCreationDate.getTime()));
+			statements[7].setString(3, worldName);
 			
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[7].executeQuery();
 			
 			List<PlotID> plotList = new ArrayList<>();
 			
@@ -663,10 +674,6 @@ public class DataManager
 			e.printStackTrace();
 			
 			throw e;
-		}
-		finally
-		{
-			statement.close();
 		}
 	}
 	
@@ -684,29 +691,30 @@ public class DataManager
 	 */
 	public List<PlotID> getPlotsByLatestPlayerLoginDate(PlotState state, Date latestPlayerLoginDate, String permission, String worldName) throws Exception
 	{
-		PreparedStatement statement = null;
-		
 		try
 		{
 			refreshDatabaseConnection();
 			
-			statement = databaseConnection.prepareStatement(
-					  "SELECT DISTINCT plot.x, plot.z "
-					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world, " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player "
-					+ "WHERE plot.world_id = world.id "
-					+ "AND plot.state = ? " //1
-					+ "AND plot.id = access.plot_id "
-					+ "AND player.id = access.player_id "
-					+ "AND player.last_login_date < ? " //2
-					+ "AND access.permission = ? " //3
-					+ "AND world.name = ?"); //4
+			if(statements[8] == null || statements[8].isClosed()) 
+			{
+				statements[8] = databaseConnection.prepareStatement(
+						  "SELECT DISTINCT plot.x, plot.z "
+						+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world, " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player "
+						+ "WHERE plot.world_id = world.id "
+						+ "AND plot.state = ? " //1
+						+ "AND plot.id = access.plot_id "
+						+ "AND player.id = access.player_id "
+						+ "AND player.last_login_date < ? " //2
+						+ "AND access.permission = ? " //3
+						+ "AND world.name = ?"); //4
+			}
 			
-			statement.setInt(1, state.getId());
-			statement.setTimestamp(2, new Timestamp(latestPlayerLoginDate.getTime()));
-			statement.setString(3, permission);
-			statement.setString(4, worldName);
+			statements[8].setInt(1, state.getId());
+			statements[8].setTimestamp(2, new Timestamp(latestPlayerLoginDate.getTime()));
+			statements[8].setString(3, permission);
+			statements[8].setString(4, worldName);
 			
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[8].executeQuery();
 			
 			List<PlotID> plotList = new ArrayList<>();
 			
@@ -726,10 +734,6 @@ public class DataManager
 			e.printStackTrace();
 			
 			throw e;
-		}
-		finally
-		{
-			statement.close();
 		}
 	}
 	
@@ -745,26 +749,26 @@ public class DataManager
 	 */
 	public List<PlotID> getPlotsByLatestModificationDate(PlotState state, Date latestModificationDate, String worldName) throws Exception
 	{
-		PreparedStatement statement = null;
-		
 		try
 		{
 			refreshDatabaseConnection();
 			
-			statement = databaseConnection.prepareStatement(
-					  "SELECT DISTINCT plot.x, plot.z "
-					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
-					+ "WHERE plot.world_id = world.id "
-					+ "AND plot.state = ? " //1
-					+ "AND plot.modification_date < ? " //2
-					+ "AND world.name = ?"); //3
-
+			if(statements[9] == null || statements[9].isClosed()) 
+			{
+				statements[9] = databaseConnection.prepareStatement(
+						  "SELECT DISTINCT plot.x, plot.z "
+						+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
+						+ "WHERE plot.world_id = world.id "
+						+ "AND plot.state = ? " //1
+						+ "AND plot.modification_date < ? " //2
+						+ "AND world.name = ?"); //3
+			}
 			
-			statement.setInt(1, state.getId());
-			statement.setTimestamp(2, new Timestamp(latestModificationDate.getTime()));
-			statement.setString(3, worldName);
+			statements[9].setInt(1, state.getId());
+			statements[9].setTimestamp(2, new Timestamp(latestModificationDate.getTime()));
+			statements[9].setString(3, worldName);
 			
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[9].executeQuery();
 			
 			List<PlotID> plotList = new ArrayList<>();
 			
@@ -785,10 +789,6 @@ public class DataManager
 			
 			throw e;
 		}
-		finally
-		{
-			statement.close();
-		}
 	}
 	
 	//method for plotcheck
@@ -801,23 +801,22 @@ public class DataManager
 	 */
 	public List<PlotID> getPlotsByState(PlotState state) throws Exception
 	{
-		PreparedStatement statement = null;
-		
 		try
 		{
 			refreshDatabaseConnection();
 			
-			statement = databaseConnection.prepareStatement(
-					  "SELECT DISTINCT world.name, plot.x, plot.z "
-					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
-					+ "WHERE plot.world_id = world.id "
-					+ "AND plot.state = ?"); //1
-
-
+			if(statements[10] == null || statements[10].isClosed()) 
+			{
+				statements[10] = databaseConnection.prepareStatement(
+						  "SELECT DISTINCT world.name, plot.x, plot.z "
+						+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world "
+						+ "WHERE plot.world_id = world.id "
+						+ "AND plot.state = ?"); //1
+			}
 			
-			statement.setInt(1, state.getId());
+			statements[10].setInt(1, state.getId());
 			
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[10].executeQuery();
 			
 			List<PlotID> plotList = new ArrayList<>();
 			
@@ -840,10 +839,6 @@ public class DataManager
 			
 			throw e;
 		}
-		finally
-		{
-			statement.close();
-		}
 	}
 
 	/**
@@ -857,28 +852,28 @@ public class DataManager
 	 */
 	public List<PlotID> getPlotsByPermission(UUID playerID, String worldName, String permission) throws Exception
 	{
-		PreparedStatement statement = null;
-		
 		try
 		{
 			refreshDatabaseConnection();
 			
-			statement = databaseConnection.prepareStatement(
-					  "SELECT DISTINCT plot.x, plot.z "
-					+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world, " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player "
-					+ "WHERE plot.world_id = world.id "
-					+ "AND plot.id = access.plot_id "
-					+ "AND player.id = access.player_id "
-					+ "AND player.uuid = ? " //1
-					+ "AND world.name = ? " //2
-					+ "AND access.permission = ? "); //3
-
+			if(statements[11] == null || statements[11].isClosed()) 
+			{
+				statements[11] = databaseConnection.prepareStatement(
+						  "SELECT DISTINCT plot.x, plot.z "
+						+ "FROM " + databaseTablePrefix + "plots plot, " + databaseTablePrefix + "worlds world, " + databaseTablePrefix + "player_plot_access access, " + databaseTablePrefix + "players player "
+						+ "WHERE plot.world_id = world.id "
+						+ "AND plot.id = access.plot_id "
+						+ "AND player.id = access.player_id "
+						+ "AND player.uuid = ? " //1
+						+ "AND world.name = ? " //2
+						+ "AND access.permission = ? "); //3
+			}
 			
-			statement.setString(1, playerID.toString());
-			statement.setString(2, worldName);
-			statement.setString(3, permission);
+			statements[11].setString(1, playerID.toString());
+			statements[11].setString(2, worldName);
+			statements[11].setString(3, permission);
 			
-			ResultSet resultSet = statement.executeQuery();
+			ResultSet resultSet = statements[11].executeQuery();
 			
 			List<PlotID> plotList = new ArrayList<>();
 			
@@ -898,10 +893,6 @@ public class DataManager
 			e.printStackTrace();
 			
 			throw e;
-		}
-		finally
-		{
-			statement.close();
 		}
 	}
 }
