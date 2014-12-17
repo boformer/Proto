@@ -22,6 +22,8 @@ import com.typesafe.config.ConfigValue;
  */
 public class ConfigManager
 {
+	//TODO config modification + saving
+	
 	private final ProtoPlugin plugin;
 	
 	private final File pluginConfigFile;

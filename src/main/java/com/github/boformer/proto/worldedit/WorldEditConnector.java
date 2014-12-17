@@ -14,11 +14,11 @@ import org.spongepowered.api.world.World;
 
 import com.github.boformer.proto.ProtoPlugin;
 import com.github.boformer.proto.access.PlayerPlotAccess;
-import com.github.boformer.proto.config.PlotAbandonAction;
 import com.github.boformer.proto.config.WorldConfig;
 import com.github.boformer.proto.data.PlotID;
 import com.github.boformer.proto.event.PlotAbandonEvent;
 import com.github.boformer.proto.event.PlotAccessChangeEvent;
+import com.github.boformer.proto.plotcheck.PlotAbandonAction;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.LocalSession;
