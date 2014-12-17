@@ -106,7 +106,7 @@ public class PlayerEventHandler
 					else
 					{
 						//TODO limit list items to config.maxListSize?
-						List<String> managers = plugin.getDataManager().getPlayerNamesByPermission(plotID, "manage");
+						List<String> managers = plugin.getDataManager().getPlayerNamesByPlotPermission(plotID, "manage");
 						
 						//player has no permission
 						if(managers.size() == 0) 
@@ -169,7 +169,7 @@ public class PlayerEventHandler
 				else
 				{
 					//TODO limit list items to config.maxListSize?
-					List<String> managers = plugin.getDataManager().getPlayerNamesByPermission(world.getName(), "manage");
+					List<String> managers = plugin.getDataManager().getPlayerNamesByWorldPermission(world.getName(), "manage");
 					
 					if(managers.size() == 0) 
 					{

@@ -530,8 +530,15 @@ public class DataManager
 		}
 	}
 	
-	//TODO javadoc
-	public List<String> getPlayerNamesByPermission(PlotID plotID, String permission) throws Exception
+	/**
+	 * Gets a list of player names with a certain permission in a plot.
+	 * 
+	 * @param plotID The plot ID
+	 * @param permission The permission
+	 * @return A list of player names
+	 * @throws Exception Database Exception
+	 */
+	public List<String> getPlayerNamesByPlotPermission(PlotID plotID, String permission) throws Exception
 	{
 
 		try
@@ -578,8 +585,15 @@ public class DataManager
 		}
 	}
 	
-	//TODO javadoc
-	public List<String> getPlayerNamesByPermission(String worldName, String permission) throws Exception
+	/**
+	 * Gets a list of player names with a certain permission in a world.
+	 * 
+	 * @param worldName The world name
+	 * @param permission The permission
+	 * @return A list of player names
+	 * @throws Exception Database Exception
+	 */
+	public List<String> getPlayerNamesByWorldPermission(String worldName, String permission) throws Exception
 	{
 		try
 		{
