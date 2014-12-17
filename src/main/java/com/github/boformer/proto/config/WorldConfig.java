@@ -1,6 +1,8 @@
 package com.github.boformer.proto.config;
 
 import com.github.boformer.proto.plotcheck.PlotAbandonAction;
+import com.github.boformer.proto.plotcheck.PlotExpirationAction;
+import com.github.boformer.proto.plotcheck.PlotExpirationStartTime;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
 
@@ -11,8 +13,8 @@ public class WorldConfig
 {
 	public static final int DEFAULT_PLOT_SIZE = 32;
 	public static final int DEFAULT_EXPIRATION_DAYS = 30;
-	public static final String DEFAULT_EXPIRATION_START_TIME = "LAST_MODIFICATION";
-	public static final String DEFAULT_EXPIRATION_ACTION = "STAFF_REVIEW";
+	public static final PlotExpirationStartTime DEFAULT_EXPIRATION_START_TIME = PlotExpirationStartTime.LAST_MODIFICATION;
+	public static final PlotExpirationAction DEFAULT_EXPIRATION_ACTION = PlotExpirationAction.STAFF_REVIEW;
 	public static final PlotAbandonAction DEFAULT_PLOT_ABANDON_ACTION = PlotAbandonAction.NONE;
 	
 	public boolean plotsEnabled;
@@ -31,8 +33,8 @@ public class WorldConfig
 	plugin.getLogger().error("Invalid plot configuration for world '" + worldName + "':");
 	plugin.getLogger().error("The property plotcheck.expiration-action can only be STAFF_REVIEW or AUTO_DELETE ;)");
 	 */
-	public String plotExpirationStartTime;
-	public String plotExpirationAction;
+	public PlotExpirationStartTime plotExpirationStartTime;
+	public PlotExpirationAction plotExpirationAction;
 	
 	public PlotAbandonAction plotAbandonAction;
 	
@@ -94,7 +96,7 @@ public class WorldConfig
 		
 		if(config.hasPath("plot.plotcheck.expiration-start-time"))
 		{
-			plotExpirationStartTime = config.getString("plot.plotcheck.expiration-start-time");
+			plotExpirationStartTime = PlotExpirationStartTime.valueOf(config.getString("plot.plotcheck.expiration-start-time"));
 		}
 		else
 		{
@@ -103,7 +105,7 @@ public class WorldConfig
 		
 		if(config.hasPath("plot.plotcheck.expiration-action"))
 		{
-			plotExpirationAction = config.getString("plot.plotcheck.expiration-action");
+			plotExpirationAction = PlotExpirationAction.valueOf(config.getString("plot.plotcheck.expiration-action"));
 		}
 		else
 		{

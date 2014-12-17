@@ -95,19 +95,19 @@ public class PlotCheckManager
 				
 				//TODO use enums?
 				//when does a plot expire?
-				if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("CREATION")) 
+				if(worldConfig.plotExpirationStartTime == PlotExpirationStartTime.CREATION) 
 				{
 					plotList = plugin.getDataManager().getPlotsByLatestCreationDate(PlotState.CLAIMED, calendar.getTime(), world.getName());
 				}
-				else if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("LAST_MODIFICATION")) 
+				else if(worldConfig.plotExpirationStartTime == PlotExpirationStartTime.LAST_MODIFICATION) 
 				{
 					plotList = plugin.getDataManager().getPlotsByLatestModificationDate(PlotState.CLAIMED, calendar.getTime(), world.getName());
 				}
-				else if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("LAST_OWNER_LOGIN")) 
+				else if(worldConfig.plotExpirationStartTime == PlotExpirationStartTime.LAST_OWNER_LOGIN) 
 				{
 					plotList = plugin.getDataManager().getPlotsByLatestPlayerLoginDate(PlotState.CLAIMED, calendar.getTime(), "owner", world.getName());
 				}
-				else if(worldConfig.plotExpirationStartTime.equalsIgnoreCase("LAST_MANAGER_LOGIN")) 
+				else if(worldConfig.plotExpirationStartTime == PlotExpirationStartTime.LAST_MANAGER_LOGIN) 
 				{
 					plotList = plugin.getDataManager().getPlotsByLatestPlayerLoginDate(PlotState.CLAIMED, calendar.getTime(), "manager", world.getName());
 				}
@@ -119,11 +119,11 @@ public class PlotCheckManager
 			
 				//TODO use enums?
 				//what happens when a plot is expired?
-				if(worldConfig.plotExpirationAction.equalsIgnoreCase("STAFF_REVIEW")) 
+				if(worldConfig.plotExpirationAction == PlotExpirationAction.STAFF_REVIEW) 
 				{
 					expiredPlots.addAll(plotList);
 				}
-				else if(worldConfig.plotExpirationAction.equalsIgnoreCase("AUTO_DELETE")) 
+				else if(worldConfig.plotExpirationAction == PlotExpirationAction.AUTO_DELETE) 
 				{
 					//TODO remove player access, change state to LOCKED_FOR_DELETION
 					
