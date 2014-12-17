@@ -9,7 +9,6 @@ import org.spongepowered.api.util.event.callback.CallbackList;
 import com.github.boformer.proto.access.PlayerPlotAccess;
 
 //TODO javadoc
-
 public class PlotAccessChangeEvent extends Event
 {
 	private final Map<PlayerPlotAccess, Boolean> accessChangeMap;

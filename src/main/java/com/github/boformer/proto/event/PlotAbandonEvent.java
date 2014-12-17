@@ -5,6 +5,7 @@ import org.spongepowered.api.util.event.callback.CallbackList;
 
 import com.github.boformer.proto.data.PlotID;
 
+//TODO javadoc
 public class PlotAbandonEvent extends Event
 {
 	private final PlotID plotID;
