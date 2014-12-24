@@ -126,6 +126,7 @@ public class PlotCheckManager
 				else if(worldConfig.plotExpirationAction == PlotExpirationAction.AUTO_DELETE) 
 				{
 					//TODO remove player access, change state to LOCKED_FOR_DELETION
+					plugin.getDataManager().preparePlotsForDeletion(plotList);
 					
 					deletionPlots.addAll(plotList);
 				}

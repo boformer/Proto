@@ -28,6 +28,8 @@ import com.github.boformer.proto.config.PluginConfig;
  */
 public class DataManager
 {
+	//TODO don't print stack trace/warning message when exception is passed up
+	
 	private final ProtoPlugin plugin;
 	
 	private String databaseTablePrefix;
@@ -38,8 +40,7 @@ public class DataManager
 	private LRUMap<PlayerWorldAccess, Boolean> playerWorldAccessCache;
 	
 	//Prepared Statements Array. Statements can be re-used while the connection is open
-	private PreparedStatement statements[] = new PreparedStatement[12];
-	
+	private PreparedStatement statements[] = new PreparedStatement[13];
 	
 	/** 
 	 * <i>Internal constructor: Create a new data manager.</i>
@@ -51,8 +52,6 @@ public class DataManager
 		this.plugin = plugin;
 	}
 	
-	//TODO don't print stack trace/warning message when exception is passed up
-
 	/** 
 	 * <i>Internal method: Initializes the data manager when the server starts up. Creates the database tables on first startup.</i>
 	 */
@@ -907,6 +906,85 @@ public class DataManager
 			e.printStackTrace();
 			
 			throw e;
+		}
+	}
+
+	public void preparePlotsForDeletion(List<PlotID> plotList) throws Exception
+	{
+		for(PlotID plotID : plotList) 
+		{
+			PlotData plotData = null;
+			
+			try
+			{
+				plotData = getPlotData(plotID);
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(plotData != null) 
+			{
+				plotData.setState(PlotState.LOCKED_FOR_DELETION);
+				plotData.setName(null);
+			}
+			
+			save(plotData);
+			
+			//remove access
+			removeAllPlotAccess(plotID);
+		}
+	}
+	
+	private void save(PlotData plotData)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void removeAllPlotAccess(PlotID plotID) throws Exception
+	{
+		try
+		{
+			refreshDatabaseConnection();
+			
+			if(statements[12] == null || statements[12].isClosed()) 
+			{
+				//TODO
+				statements[12] = databaseConnection.prepareStatement(
+						  "DELETE "
+						+ "FROM " + databaseTablePrefix + "player_plot_access access"
+						+ "JOIN " + databaseTablePrefix + "plots plot"
+						+ "ON access.plot_id = plot.id"
+						+ "WHERE plot.world_id = ("
+							+ "SELECT DISTINCT world.id from " + databaseTablePrefix + "worlds world"
+							+ "WHERE world.name = ?" //1
+						+ ") "
+						+ "AND plot.x = ? " //2
+						+ "AND plot.z = ? "); //3
+			}
+		
+			statements[4].setString(1, plotID.getWorldName());
+			statements[4].setInt(2, plotID.getX());
+			statements[4].setInt(3, plotID.getZ());
+
+			statements[12].execute();
+
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().error("Unable to delete access data: " + e.getMessage());
+			e.printStackTrace();
+			
+			throw e;
+		}
+		
+		//remove access from cache
+		for(PlayerPlotAccess access : playerPlotAccessCache.keySet()) 
+		{
+			if(access.getPlotID().equals(plotID)) playerPlotAccessCache.put(access, false);
 		}
 	}
 }
