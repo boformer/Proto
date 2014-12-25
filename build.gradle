@@ -18,7 +18,7 @@ repositories {
 dependencies {
 
     //Sponge
-    compile "org.spongepowered:spongeapi:1.0"
+    compile "org.spongepowered:spongeapi:1.1"
     
     //MySQL
     compile 'mysql:mysql-connector-java:5.1.34'
