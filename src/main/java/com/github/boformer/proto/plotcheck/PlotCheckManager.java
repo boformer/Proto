@@ -2,6 +2,7 @@ package com.github.boformer.proto.plotcheck;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -74,6 +75,19 @@ public class PlotCheckManager
 		expiredPlots = new ArrayList<>();
 		deletionPlots = new ArrayList<>();
 		
+		List<PlotID> plotList;
+		
+		try
+		{
+			plotList = plugin.getDataManager().getPlotsByState(PlotState.LOCKED_FOR_DELETION);
+			deletionPlots.addAll(plotList);
+		}
+		catch (Exception e)
+		{
+			plugin.getLogger().error("Error while updating list of plots marked for deletion: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
 		for(String worldName : plugin.getConfigManager().getWorldNames())
 		{
 			World world = game.getWorld(worldName);
@@ -91,9 +105,6 @@ public class PlotCheckManager
 			//add plots to list
 			try
 			{
-				List<PlotID> plotList;
-				
-				//TODO use enums?
 				//when does a plot expire?
 				if(worldConfig.plotExpirationStartTime == PlotExpirationStartTime.CREATION) 
 				{
@@ -117,7 +128,6 @@ public class PlotCheckManager
 					continue;
 				}
 			
-				//TODO use enums?
 				//what happens when a plot is expired?
 				if(worldConfig.plotExpirationAction == PlotExpirationAction.STAFF_REVIEW) 
 				{
@@ -142,6 +152,11 @@ public class PlotCheckManager
 				e.printStackTrace();
 			}
 		}
+		
+		//randomize list order
+		Collections.shuffle(expiredPlots);
+		Collections.shuffle(deletionPlots);
+		Collections.shuffle(submittedPlots);
 	}
 
 	/**

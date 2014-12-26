@@ -1,6 +1,7 @@
 package com.github.boformer.proto;
 
 import org.slf4j.Logger;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.util.event.Subscribe;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
@@ -9,6 +10,7 @@ import org.spongepowered.api.plugin.Plugin;
 import com.github.boformer.proto.config.ConfigManager;
 import com.github.boformer.proto.data.DataManager;
 import com.github.boformer.proto.event.PlayerEventHandler;
+import com.github.boformer.proto.worldedit.WorldEditConnector;
 
 /**
  * The Plugin for Sponge. 
@@ -23,12 +25,14 @@ public class ProtoPlugin
 	//TODO create data for loaded worlds in config on startup
 	//TODO worldgen plot regeneration
 	
+	private Game game;
 	private Logger logger;
 
 	private ConfigManager configManager;
 	private DataManager dataManager;
-
-
+	
+	private WorldEditConnector worldEditConnector;
+	
 	/**
 	 * Called when server starts up.
 	 * 
@@ -37,6 +41,7 @@ public class ProtoPlugin
 	@Subscribe
 	public void onInit(PreInitializationEvent event)
 	{
+		game = event.getGame();
 		logger = event.getPluginLog();
 
 		// init ConfigManager
@@ -57,9 +62,15 @@ public class ProtoPlugin
 		}
 
 		// register events
-		event.getGame().getEventManager().register(this, new PlayerEventHandler(this));
+		game.getEventManager().register(this, new PlayerEventHandler(this));
+		
+		if(true)//TODO worldedit installed?
+		{
+			worldEditConnector = new WorldEditConnector(this, game, null/*TODO*/);
+			worldEditConnector.initialize();
+		}
 	}
-	
+
 	/**
 	 * Called when server shuts down.
 	 * 
@@ -99,6 +110,12 @@ public class ProtoPlugin
 	public DataManager getDataManager()
 	{
 		return dataManager;
+	}
+	
+	
+	public WorldEditConnector getWorldEditConnector()
+	{
+		return worldEditConnector;
 	}
 
 	/**

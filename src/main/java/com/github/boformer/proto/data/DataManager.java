@@ -987,4 +987,9 @@ public class DataManager
 			if(access.getPlotID().equals(plotID)) playerPlotAccessCache.put(access, false);
 		}
 	}
+
+	public void removePlotData(PlotID plotID)
+	{
+		// TODO Auto-generated method stub
+	}
 }

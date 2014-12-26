@@ -18,7 +18,7 @@ import com.github.boformer.proto.config.WorldConfig;
 import com.github.boformer.proto.data.PlotID;
 import com.github.boformer.proto.event.PlotAbandonEvent;
 import com.github.boformer.proto.event.PlotAccessChangeEvent;
-import com.github.boformer.proto.plotcheck.PlotAbandonAction;
+import com.github.boformer.proto.plotcheck.PlotRegeneration;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.LocalSession;
@@ -116,7 +116,7 @@ public class WorldEditConnector
 	{
 		WorldConfig worldConfig = plugin.getConfigManager().getWorldConfig(event.getPlotID().getWorldName());
 		
-		if(worldConfig.plotAbandonAction == PlotAbandonAction.WORLDEDIT_SNAPSHOT_RESTORE) 
+		if(worldConfig.plotRegeneration == PlotRegeneration.WORLDEDIT_SNAPSHOT) 
 		{
 			restorePlotFromSnapshot(event.getPlotID());
 		}

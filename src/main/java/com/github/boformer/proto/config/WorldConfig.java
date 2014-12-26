@@ -1,6 +1,6 @@
 package com.github.boformer.proto.config;
 
-import com.github.boformer.proto.plotcheck.PlotAbandonAction;
+import com.github.boformer.proto.plotcheck.PlotRegeneration;
 import com.github.boformer.proto.plotcheck.PlotExpirationAction;
 import com.github.boformer.proto.plotcheck.PlotExpirationStartTime;
 import com.typesafe.config.Config;
@@ -15,7 +15,7 @@ public class WorldConfig
 	public static final int DEFAULT_EXPIRATION_DAYS = 30;
 	public static final PlotExpirationStartTime DEFAULT_EXPIRATION_START_TIME = PlotExpirationStartTime.LAST_MODIFICATION;
 	public static final PlotExpirationAction DEFAULT_EXPIRATION_ACTION = PlotExpirationAction.STAFF_REVIEW;
-	public static final PlotAbandonAction DEFAULT_PLOT_ABANDON_ACTION = PlotAbandonAction.NONE;
+	public static final PlotRegeneration DEFAULT_PLOT_REGENERATION = PlotRegeneration.NONE;
 	
 	public boolean plotsEnabled;
 	
@@ -36,7 +36,7 @@ public class WorldConfig
 	public PlotExpirationStartTime plotExpirationStartTime;
 	public PlotExpirationAction plotExpirationAction;
 	
-	public PlotAbandonAction plotAbandonAction;
+	public PlotRegeneration plotRegeneration;
 	
 	
 	public WorldConfig(Config config)
@@ -115,13 +115,13 @@ public class WorldConfig
 		//plot abandon
 		if(config.hasPath("plot.abandon-action"))
 		{
-			plotAbandonAction = PlotAbandonAction.valueOf(config.getString("plot.abandon-action"));
+			plotRegeneration = PlotRegeneration.valueOf(config.getString("plot.regeneration"));
 			
-			if(plotAbandonAction == null) plotAbandonAction = DEFAULT_PLOT_ABANDON_ACTION;
+			if(plotRegeneration == null) plotRegeneration = DEFAULT_PLOT_REGENERATION;
 		}
 		else
 		{
-			plotAbandonAction = DEFAULT_PLOT_ABANDON_ACTION;
+			plotRegeneration = DEFAULT_PLOT_REGENERATION;
 		}
 	}
 	
