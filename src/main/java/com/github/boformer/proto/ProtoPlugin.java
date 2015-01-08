@@ -6,11 +6,14 @@ import org.spongepowered.api.util.event.Subscribe;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import com.github.boformer.proto.config.ConfigManager;
 import com.github.boformer.proto.data.DataManager;
 import com.github.boformer.proto.event.PlayerEventHandler;
 import com.github.boformer.proto.worldedit.WorldEditConnector;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 /**
  * The Plugin for Sponge. 
@@ -64,9 +67,15 @@ public class ProtoPlugin
 		// register events
 		game.getEventManager().register(this, new PlayerEventHandler(this));
 		
-		if(true)//TODO worldedit installed?
+		PluginContainer worldEditPluginContainer = game.getPluginManager().getPlugin("WorldEdit").orNull();
+		
+		// is WorldEdit installed?
+		if(worldEditPluginContainer != null)
 		{
-			worldEditConnector = new WorldEditConnector(this, game, null/*TODO*/);
+			//TODO Cast to sponge WorldEditPlugin, not the Bukkit version
+			WorldEdit worldEdit = ((/*Placeholder from Bukkit!*/ WorldEditPlugin) worldEditPluginContainer.getInstance()).getWorldEdit();
+			
+			worldEditConnector = new WorldEditConnector(this, game, worldEdit);
 			worldEditConnector.initialize();
 		}
 	}
