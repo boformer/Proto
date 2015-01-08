@@ -72,8 +72,8 @@ public class ProtoPlugin
 		// is WorldEdit installed?
 		if(worldEditPluginContainer != null)
 		{
-			//TODO Cast to sponge WorldEditPlugin, not the Bukkit version
-			WorldEdit worldEdit = ((/*Placeholder from Bukkit!*/ WorldEditPlugin) worldEditPluginContainer.getInstance()).getWorldEdit();
+			//TODO See how to get WorldEdit in Sponge...
+			WorldEdit worldEdit = (/*Placeholder Cast!*/ WorldEdit) worldEditPluginContainer.getInstance();
 			
 			worldEditConnector = new WorldEditConnector(this, game, worldEdit);
 			worldEditConnector.initialize();
