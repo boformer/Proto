@@ -1,10 +1,10 @@
 package com.github.boformer.proto.config;
 
+import ninja.leaping.configurate.ConfigurationNode;
+
 import com.github.boformer.proto.plotcheck.PlotRegeneration;
 import com.github.boformer.proto.plotcheck.PlotExpirationAction;
 import com.github.boformer.proto.plotcheck.PlotExpirationStartTime;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
 
 /**
  * World configuration.
@@ -39,22 +39,22 @@ public class WorldConfig
 	public PlotRegeneration plotRegeneration;
 	
 	
-	public WorldConfig(Config config)
+	public WorldConfig(ConfigurationNode config)
 	{
 
-		if(config.hasPath("plot.enabled"))
+		if(!config.getNode("plot.enabled").isVirtual())
 		{
-			plotsEnabled = config.getBoolean("plot.enabled");
+			plotsEnabled = config.getNode("plot.enabled").getBoolean();
 		}
 		else
 		{
 			plotsEnabled = false;
 		}
 		
-		if(config.hasPath("plot.size-x") && config.hasPath("plot.size-z")) 
+		if(!config.getNode("plot.size-x").isVirtual() && config.getNode("plot.size-z").isVirtual()) 
 		{
-			plotSizeX = config.getInt("plot.size-x");
-			plotSizeZ = config.getInt("plot.size-z");
+			plotSizeX = config.getNode("plot.size-x").getInt();
+			plotSizeZ = config.getNode("plot.size-z").getInt();
 		}
 		else
 		{
@@ -66,18 +66,18 @@ public class WorldConfig
 		//TODO warning in console if plotsEnabled == true
 		if(plotSizeX == 0 || plotSizeZ == 0) plotsEnabled = false; 
 		
-		if(config.hasPath("plot.origin-x"))
+		if(!config.getNode("plot.origin-x").isVirtual())
 		{
-			plotOriginX = config.getInt("plot.origin-x");
+			plotOriginX = config.getNode("plot.origin-x").getInt();
 		}
 		else
 		{
 			plotOriginX = 0;
 		}
 		
-		if(config.hasPath("plot.origin-z"))
+		if(!config.getNode("plot.origin-z").isVirtual())
 		{
-			plotOriginZ = config.getInt("plot.origin-z");
+			plotOriginZ = config.getNode("plot.origin-z").getInt();
 		}
 		else
 		{
@@ -85,16 +85,16 @@ public class WorldConfig
 		}
 		
 		//plotcheck
-		if(config.hasPath("plot.plotcheck.expiration-days"))
+		if(!config.getNode("plot.plotcheck.expiration-days").isVirtual())
 		{
-			plotExpirationDays = config.getInt("plot.plotcheck.expiration-days");
+			plotExpirationDays = config.getNode("plot.plotcheck.expiration-days").getInt();
 		}
 		else
 		{
 			plotExpirationDays = DEFAULT_EXPIRATION_DAYS;
 		}
 		
-		if(config.hasPath("plot.plotcheck.expiration-start-time"))
+		if(!config.getNode("plot.plotcheck.expiration-start-time").isVirtual())
 		{
 			plotExpirationStartTime = PlotExpirationStartTime.valueOf(config.getString("plot.plotcheck.expiration-start-time"));
 		}
@@ -103,7 +103,7 @@ public class WorldConfig
 			plotExpirationStartTime = DEFAULT_EXPIRATION_START_TIME;
 		}
 		
-		if(config.hasPath("plot.plotcheck.expiration-action"))
+		if(!config.getNode("plot.plotcheck.expiration-action").isVirtual())
 		{
 			plotExpirationAction = PlotExpirationAction.valueOf(config.getString("plot.plotcheck.expiration-action"));
 		}
@@ -113,7 +113,7 @@ public class WorldConfig
 		}
 		
 		//plot abandon
-		if(config.hasPath("plot.abandon-action"))
+		if(!config.getNode("plot.abandon-action").isVirtual())
 		{
 			plotRegeneration = PlotRegeneration.valueOf(config.getString("plot.regeneration"));
 			

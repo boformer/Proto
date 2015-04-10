@@ -1,6 +1,6 @@
 package com.github.boformer.proto.config;
 
-import com.typesafe.config.Config;
+import ninja.leaping.configurate.ConfigurationNode;
 
 /**
  * Main plugin configuration.
@@ -18,18 +18,18 @@ public class PluginConfig
 	public final int regenTaskInterval;
 	public final int regenPlotsPerTask;
 	
-	public PluginConfig(Config config)
+	public PluginConfig(ConfigurationNode config)
 	{
-		databaseUrl = config.getString("database.url");
-		databaseUser = config.getString("database.user");
-		databasePassword = config.getString("database.password");
-		databaseTablePrefix = config.getString("database.table-prefix");
+		databaseUrl = config.getNode("database.url").getString();
+		databaseUser = config.getNode("database.user").getString();
+		databasePassword = config.getNode("database.password").getString();
+		databaseTablePrefix = config.getNode("database.table-prefix").getString();
 		
-		instantPlotRegen = config.getBoolean("plot-regeneration.instant");
-		regenMaxServerUsage = config.getDouble("plot-regeneration.max-server-usage");
-		regenTaskInterval = config.getInt("plot-regeneration.task-interval");
+		instantPlotRegen = config.getNode("plot-regeneration.instant").getBoolean();
+		regenMaxServerUsage = config.getNode("plot-regeneration.max-server-usage").getDouble();
+		regenTaskInterval = config.getNode("plot-regeneration.task-interval").getInt();
 		
-		regenPlotsPerTask = config.getInt("plot-regeneration.plots-per-task");
+		regenPlotsPerTask = config.getNode("plot-regeneration.plots-per-task").getInt();
 		
 	}
 }

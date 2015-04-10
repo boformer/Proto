@@ -1,26 +1,32 @@
 package com.github.boformer.proto;
 
+import java.io.File;
+
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.util.event.Subscribe;
+import org.spongepowered.api.event.Subscribe;
 import org.spongepowered.api.event.state.PreInitializationEvent;
 import org.spongepowered.api.event.state.ServerStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.config.DefaultConfig;
 
 import com.github.boformer.proto.config.ConfigManager;
 import com.github.boformer.proto.data.DataManager;
 import com.github.boformer.proto.event.PlayerEventHandler;
 import com.github.boformer.proto.worldedit.WorldEditConnector;
+import com.google.inject.Inject;
 import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 
 /**
  * The Plugin for Sponge. 
  * 
  * <p>This class listens for game state changes and provides access to data and config managers.</p>
  */
-@Plugin(id = "Proto", name = "Proto", version = "1.0.0")
+@Plugin(id = "Proto", name = "Proto", version = "1.0.0-SNAPSHOT")
 public class ProtoPlugin
 {
 	//TODO change some constructors to protected when possible, or use interfaces?
@@ -28,8 +34,19 @@ public class ProtoPlugin
 	//TODO create data for loaded worlds in config on startup
 	//TODO worldgen plot regeneration
 	
+    @Inject
 	private Game game;
+	
+	@Inject
 	private Logger logger;
+	
+	@Inject
+	@DefaultConfig(sharedRoot = false)
+	private ConfigurationLoader<CommentedConfigurationNode> configLoader;
+	
+    @Inject
+    @DefaultConfig(sharedRoot = false)
+    private File configFile;
 
 	private ConfigManager configManager;
 	private DataManager dataManager;
@@ -44,11 +61,8 @@ public class ProtoPlugin
 	@Subscribe
 	public void onInit(PreInitializationEvent event)
 	{
-		game = event.getGame();
-		logger = event.getPluginLog();
-
 		// init ConfigManager
-		configManager = new ConfigManager(this, event.getRecommendedConfigurationFile());
+		configManager = new ConfigManager(this, configFile, configLoader);
 		configManager.initialize();
 
 		// init DataManager

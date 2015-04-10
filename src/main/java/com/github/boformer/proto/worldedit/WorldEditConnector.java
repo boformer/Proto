@@ -7,9 +7,10 @@ import java.util.List;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.event.message.CommandEvent;
-import org.spongepowered.api.event.player.PlayerChangeWorldEvent;
-import org.spongepowered.api.event.player.PlayerJoinEvent;
-import org.spongepowered.api.util.event.Subscribe;
+import org.spongepowered.api.event.entity.player.PlayerChangeWorldEvent;
+import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
+import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.world.World;
 
 import com.github.boformer.proto.ProtoPlugin;
@@ -77,7 +78,7 @@ public class WorldEditConnector
 		game.getEventManager().register(plugin, this);
 		
 		//create masks for all logged in players
-		for(Player player : game.getOnlinePlayers()) 
+		for(Player player : game.getServer().getOnlinePlayers()) 
 		{
 			updateMask(player);
 		}
@@ -93,7 +94,7 @@ public class WorldEditConnector
 		{
 			if(!access.getPermission().equalsIgnoreCase("worldedit")) continue;
 			
-			Player player = game.getPlayer(access.getPlayerID()).orNull();
+			Player player = game.getServer().getPlayer(access.getPlayerID()).orNull();
 			
 			//player not logged in
 			if(player == null) continue;
@@ -153,7 +154,7 @@ public class WorldEditConnector
 			{
 				event.setCancelled(true);
 				
-				player.sendMessage("You can't use this command in plot worlds.");
+				player.sendMessage(Texts.of("You can't use this command in plot worlds."));
 			}
 		}
 	}
@@ -254,7 +255,7 @@ public class WorldEditConnector
 	 */
 	public void restorePlotFromSnapshot(PlotID plotID) 
 	{
-		World world = game.getWorld(plotID.getWorldName());
+		World world = game.getServer().getWorld(plotID.getWorldName()).orNull();
 		
 		//TODO load world?
 		//TODO Important: put plot on a list of plots that have to be restored

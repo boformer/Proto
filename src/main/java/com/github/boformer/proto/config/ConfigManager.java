@@ -3,14 +3,12 @@ package com.github.boformer.proto.config;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
-import org.spongepowered.api.util.config.ConfigFile;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 import com.github.boformer.proto.ProtoPlugin;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigValue;
 
 /**
  * Provides and manages the plugin and world configuration.
@@ -26,10 +24,14 @@ public class ConfigManager
 	
 	private final ProtoPlugin plugin;
 	
-	private final File pluginConfigFile;
+	
+	private final File configFile;
+    private final ConfigurationLoader<CommentedConfigurationNode> configLoader;
 	
 	private PluginConfig pluginConfig;
 	private HashMap<String, WorldConfig> worldConfigs;
+
+
 	
 	/** 
 	 * <i>Internal method: Create a new config manager.</i>
@@ -37,10 +39,11 @@ public class ConfigManager
 	 * @param plugin The plugin
 	 * @param pluginConfigFile The recommended config file
 	 */
-	public ConfigManager(ProtoPlugin plugin, File pluginConfigFile) 
+	public ConfigManager(ProtoPlugin plugin, File configFile, ConfigurationLoader<CommentedConfigurationNode> configLoader) 
 	{
-		this.plugin = plugin;
-		this.pluginConfigFile = pluginConfigFile;
+	    this.plugin = plugin;
+	    this.configFile = configFile;
+		this.configLoader = configLoader;
 	}
 	
 	/** 
@@ -53,6 +56,8 @@ public class ConfigManager
 	public void initialize()
 	{
 		//copy default plugin config
+	    //TODO update to new configurate library
+	    /*
 		File fallbackPluginConfigFile = new File(getClass().getClassLoader().getResource("Proto.conf").getFile());
 		ConfigFile fallbackPluginConfig = ConfigFile.parseFile(fallbackPluginConfigFile);
 		
@@ -69,6 +74,7 @@ public class ConfigManager
 			
 			worldConfigs.put(entry.getKey(), worldConfig);
 		}
+		*/
 	}
 	
 

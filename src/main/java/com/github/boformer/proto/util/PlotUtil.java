@@ -1,9 +1,7 @@
 package com.github.boformer.proto.util;
 
-import org.spongepowered.api.math.Vector3d;
-import org.spongepowered.api.math.Vector3i;
-import org.spongepowered.api.math.Vectors;
-
+import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import com.github.boformer.proto.config.ConfigManager;
 import com.github.boformer.proto.config.WorldConfig;
 import com.github.boformer.proto.data.PlotID;
@@ -25,7 +23,7 @@ public class PlotUtil
 	 */
 	public static final PlotID calculatePlotID(Vector3d position, String worldName, WorldConfig worldConfig)
 	{
-		return calculatePlotID(Vectors.create3i((int) position.getX(), (int) position.getY(), (int) position.getZ()), worldName, worldConfig);
+		return calculatePlotID(new Vector3i((int) position.getX(), (int) position.getY(), (int) position.getZ()), worldName, worldConfig);
 	}
 	
 	public static final PlotID calculatePlotID(Vector3i position, String worldName, WorldConfig worldConfig)

@@ -3,11 +3,10 @@ package com.github.boformer.proto.event;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.spongepowered.api.block.BlockLoc;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.EntityInteractionType;
-import org.spongepowered.api.event.player.PlayerInteractEvent;
-import org.spongepowered.api.util.event.Subscribe;
+import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.event.entity.player.PlayerInteractEvent;
 import org.spongepowered.api.world.World;
 
 import com.github.boformer.proto.ProtoPlugin;
@@ -44,6 +43,7 @@ public class PlayerEventHandler
 	 * 
 	 * @param event The player interact event
 	 */
+	
 	@Subscribe
 	public void onPlayerInteract(PlayerInteractEvent event) // TODO replace dummy event when supported
 	{
@@ -60,7 +60,10 @@ public class PlayerEventHandler
 		 * 		b) plot is public --> continue with 3.
 		 * 3. check server and plugin world permission --> return
 		 */
-		
+	    
+	    //TODO update this code to Sponge 1.1
+	    
+	    /*
 		//always allow that (creative mode block select)
 		if(event.getInteractionType() == EntityInteractionType.MIDDLE_CLICK) return;
 		
@@ -199,6 +202,8 @@ public class PlayerEventHandler
 			event.setCancelled(true);
 			return;
 		}
+		*/
 	}
+
 		
 }

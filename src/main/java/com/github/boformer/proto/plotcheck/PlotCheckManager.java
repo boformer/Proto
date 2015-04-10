@@ -90,7 +90,7 @@ public class PlotCheckManager
 		
 		for(String worldName : plugin.getConfigManager().getWorldNames())
 		{
-			World world = game.getWorld(worldName);
+			World world = game.getServer().getWorld(worldName).orNull();
 			
 			if(world == null) continue; //world not loaded
 			

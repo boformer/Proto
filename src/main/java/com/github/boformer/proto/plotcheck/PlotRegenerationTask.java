@@ -3,8 +3,7 @@ package com.github.boformer.proto.plotcheck;
 import java.util.Random;
 
 import org.spongepowered.api.Game;
-import org.spongepowered.api.text.message.Message;
-import org.spongepowered.api.text.message.Messages;
+import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.world.World;
 
 import com.github.boformer.proto.ProtoPlugin;
@@ -39,7 +38,7 @@ public class PlotRegenerationTask implements Runnable
 		
 		
 		//check if server is idling
-		double serverUsage = ((double) game.getOnlinePlayers().size()) / game.getMaxPlayers();
+		double serverUsage = ((double) game.getServer().getOnlinePlayers().size()) / game.getServer().getMaxPlayers();
 		
 		if(serverUsage > config.regenMaxServerUsage) return;
 		
@@ -54,7 +53,7 @@ public class PlotRegenerationTask implements Runnable
 			PlotID plotID = plotCheckManager.getDeletionPlots().get(p);
 			
 			//TODO load world if unloaded?
-			World world = game.getWorld(plotID.getWorldName());
+			World world = game.getServer().getWorld(plotID.getWorldName()).orNull();
 			
 			if(world != null) continue; //world not loaded. skip
 			
@@ -70,7 +69,7 @@ public class PlotRegenerationTask implements Runnable
 			if(warnPlayers) 
 			{
 				//warn players
-				game.broadcastMessage(Messages.of("Regenerating abandoned plots. Prepare for lag..."));
+				game.getServer().broadcastMessage(Texts.of("Regenerating abandoned plots. Prepare for lag..."));
 				
 				warnPlayers = false; //only once...
 			}
