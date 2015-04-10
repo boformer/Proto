@@ -39,7 +39,6 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.snapshots.Snapshot;
 import com.sk89q.worldedit.snapshots.SnapshotRestore;
 
-import dummy.sponge.SpongeDummy;
 import dummy.worldedit.WorldEditDummy;
 
 /**
@@ -365,7 +364,7 @@ public class WorldEditConnector
 		int greaterBoundaryZ = (plotID.getZ() + 1) * worldConfig.plotSizeZ - 1 + worldConfig.plotOriginZ;
 		
 		Vector pos1 = new Vector(lesserBoundaryX, 0, lesserBoundaryZ);
-		Vector pos2 = new Vector(greaterBoundaryX, SpongeDummy.getWorldMaxHeight(world), greaterBoundaryZ);
+		Vector pos2 = new Vector(greaterBoundaryX, world.getHeight(), greaterBoundaryZ);
 
 		return new CuboidRegion(localWorld, pos1, pos2);
 	}

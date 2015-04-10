@@ -16,8 +16,6 @@ import com.github.boformer.proto.data.PlotID;
 import com.github.boformer.proto.data.PlotState;
 import com.github.boformer.proto.util.PlotUtil;
 
-import dummy.sponge.SpongeDummy;
-
 //TODO javadoc
 public class PlayerEventHandler
 {
