@@ -2,7 +2,10 @@ package com.github.boformer.proto.worldedit;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.spongepowered.api.Game;
 import org.spongepowered.api.entity.player.Player;
@@ -10,6 +13,7 @@ import org.spongepowered.api.event.message.CommandEvent;
 import org.spongepowered.api.event.entity.player.PlayerChangeWorldEvent;
 import org.spongepowered.api.event.entity.player.PlayerJoinEvent;
 import org.spongepowered.api.event.Subscribe;
+import org.spongepowered.api.service.permission.context.Context;
 import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.world.World;
 
@@ -186,7 +190,9 @@ public class WorldEditConnector
 	 */
 	public void updateMask(Player player, World world) 
 	{
-		if(SpongeDummy.hasWorldPermission(player, world, "proto.plot.worldedit.bypass")) 
+		Set<Context> contextSet = new HashSet<Context>(Arrays.asList(new Context(Context.WORLD_KEY, world.getName())));
+	    
+	    if(player.hasPermission(contextSet,"proto.plot.worldedit.bypass")) 
 		{
 			//worldedit not restricted
 			return;
@@ -204,7 +210,7 @@ public class WorldEditConnector
 		MultiMask mask = new MultiMask();
 		LocalSession session = worldEdit.getSession(WorldEditDummy.getLocalPlayer(player));
 		
-		if(SpongeDummy.hasWorldPermission(player, world, "proto.plot.worldedit.plotsonly")) 
+		if(player.hasPermission(contextSet,"proto.plot.worldedit.plotsonly")) 
 		{
 			List<PlotID> worldEditPlots;
 			try 

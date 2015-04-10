@@ -1,7 +1,5 @@
 package dummy.sponge;
 
-import java.util.UUID;
-
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.World;
 
@@ -14,10 +12,4 @@ public class SpongeDummy
 	{
 		return 256;
 	}
-
-	public static boolean hasWorldPermission(Player player, World world, String permission)
-	{
-		return false;
-	}
-
 }
